@@ -1,0 +1,1 @@
+# shergela-laravel-validation-rule
