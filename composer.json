@@ -1,0 +1,19 @@
+{
+    "name": "shergela/laravel-validation-rule",
+    "description": "Build custom validation rules",
+    "type": "package",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Shergela\\LaravelValidationRule\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Avto Shergelashvili",
+            "email": "avtoshergelashvili11@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
