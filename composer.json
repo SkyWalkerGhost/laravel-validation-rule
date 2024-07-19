@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Shergela\\LaravelValidationRule\\": "src"
+            "Shergela\\Validations\\": "src"
         }
     },
     "authors": [
@@ -37,7 +37,7 @@
         },
         "laravel": {
             "providers": [
-                "Shergela\\LaravelValidationRule\\ShergelaLaravelValidationRuleProvide"
+                "Shergela\\Validations\\ShergelaValidationsServiceProvider"
             ]
         }
     },

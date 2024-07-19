@@ -1,8 +1,8 @@
 <?php
 
-namespace Shergela\LaravelValidationRule\Enums;
+namespace Shergela\Validations\Enums;
 
-enum IPMACAddressValidationEnum: string
+enum IPMacValidationEnum: string
 {
     /**
      * The field under validation must be an IP address.

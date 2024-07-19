@@ -1,6 +1,6 @@
 <?php
 
-namespace Shergela\LaravelValidationRule\Enums;
+namespace Shergela\Validations\Enums;
 
 enum ValidationRegexEnum: string
 {

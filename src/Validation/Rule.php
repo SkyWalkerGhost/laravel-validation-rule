@@ -1,20 +1,19 @@
 <?php
 
-namespace Shergela\LaravelValidationRule;
+namespace Shergela\Validations\Validation;
 
+use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Arr;
-use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
-use Shergela\LaravelValidationRule\Enums\ValidationRuleEnum as RuleEnum;
-use Shergela\LaravelValidationRule\Validation\ValidationRule as RuleValidation;
-use Shergela\LaravelValidationRule\Enums\ValidationIntegerEnum as IntegerRule;
-use Shergela\LaravelValidationRule\Enums\ValidationStringEnum as StringRule;
-use Closure;
+use Illuminate\Validation\Validator;
+use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
+use Shergela\Validations\Enums\ValidationRuleEnum as RuleEnum;
+use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
 
-class Rule extends RuleValidation implements ValidationRule, ValidatorAwareRule, DataAwareRule
+class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
 {
     /**
      * The validator performing the validation.

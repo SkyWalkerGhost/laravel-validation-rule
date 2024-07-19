@@ -1,10 +1,10 @@
 <?php
 
-namespace Shergela\LaravelValidationRule;
+namespace Shergela\Validations;
 
 use Illuminate\Support\ServiceProvider;
 
-class ShergelaLaravelValidationRuleProvide extends ServiceProvider
+class ShergelaValidationsServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

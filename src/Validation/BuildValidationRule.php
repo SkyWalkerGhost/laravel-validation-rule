@@ -1,15 +1,15 @@
 <?php
 
-namespace Shergela\LaravelValidationRule\Validation;
+namespace Shergela\Validations\Validation;
 
-use Shergela\LaravelValidationRule\Enums\IPMACAddressValidationEnum as IPMACRule;
-use Shergela\LaravelValidationRule\Enums\ValidationDateEnum as DateRule;
-use Shergela\LaravelValidationRule\Enums\ValidationIntegerEnum as IntegerRule;
-use Shergela\LaravelValidationRule\Enums\ValidationRegexEnum as RegexRule;
-use Shergela\LaravelValidationRule\Enums\ValidationRuleEnum as Rule;
-use Shergela\LaravelValidationRule\Enums\ValidationStringEnum as StringRule;
+use Shergela\Validations\Enums\IPMacValidationEnum as IPMACRule;
+use Shergela\Validations\Enums\ValidationDateEnum as DateRule;
+use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
+use Shergela\Validations\Enums\ValidationRegexEnum as RegexRule;
+use Shergela\Validations\Enums\ValidationRuleEnum as Rule;
+use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
 
-class ValidationRule
+class BuildValidationRule
 {
     /**
      * @var bool
