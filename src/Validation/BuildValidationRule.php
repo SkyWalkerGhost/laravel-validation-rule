@@ -8,6 +8,7 @@ use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
 use Shergela\Validations\Enums\ValidationRegexEnum as RegexRule;
 use Shergela\Validations\Enums\ValidationRuleEnum as Rule;
 use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
+use Shergela\Validations\Rules\UppercaseFirstLetter;
 
 class BuildValidationRule
 {
@@ -60,6 +61,12 @@ class BuildValidationRule
      * @var bool
      */
     protected bool $string = false;
+
+    /**
+     * @var string|null
+     * The field under validation must start with one of the given values.
+     */
+    protected ?string $startsWith = null;
 
     /**
      * @var bool
@@ -149,7 +156,12 @@ class BuildValidationRule
     /**
      * @var bool
      */
-    protected bool $upperCase = false;
+    protected bool $uppercase = false;
+
+    /**
+     * @var bool
+     */
+    protected bool $uppercaseFirst = false;
 
     /**
      * @var bool
@@ -270,10 +282,12 @@ class BuildValidationRule
             ...($this->alpha !== null ? [$this->alpha] : []),
             ...($this->alphaDash !== null ? [$this->alphaDash] : []),
             ...($this->alphaNum !== null ? [$this->alphaNum] : []),
-            ...($this->upperCase === true ? [StringRule::UPPERCASE] : []),
+            ...($this->uppercase === true ? [StringRule::UPPERCASE] : []),
             ...($this->lowerCase === true ? [StringRule::LOWERCASE] : []),
             ...($this->json === true ? [StringRule::JSON] : []),
             ...($this->url !== null ? [$this->url] : []),
+            ...($this->startsWith !== null ? [$this->startsWith] : []),
+            ...($this->uppercaseFirst === true ? [new UppercaseFirstLetter()] : []),
 
             /**
              * --------------------------------------------------------------------------------

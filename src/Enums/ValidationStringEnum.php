@@ -43,4 +43,9 @@ enum ValidationStringEnum: string
      * The field under validation must be a valid URL.
      */
     public const URL = 'url';
+
+    /**
+     * The field under validation must start with one of the given values.
+     */
+    public const STARTS_WITH = 'starts_with:';
 }

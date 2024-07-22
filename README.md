@@ -7,7 +7,7 @@ Require the package with composer using the following command:
 composer require shergela/validation-rule
 ```
 
-### ServiceProvide
+### Service Provider
 ```php
 <?php
 return [
@@ -20,58 +20,99 @@ return [
 <div>
   	<ol>
         <li><a href="#create-rule">Build rule</a></li>
+        <li><a href="#writing-messages">Build Messages</a></li>
   	</ol>
 </div>
 
 <div id="create-rule">
 
-|        **Methods**        |    **Laravel Rule**     |
-|:-------------------------:|:-----------------------:|
-|     Rule::required()      |        required         |
-|     Rule::nullable()      |        nullable         |
-|      Rule::boolean()      |         boolean         |
-|       Rule::rules()       |      custom rules       |
-|         ->email()         |          email          |
-|      ->uniqueEmail()      |   unique:users,email    |
-|     **Integer Rules**     |    **Integer Rules**    |
-|          ->min()          |           min           |
-|          ->max()          |           max           |
-|       ->minDigits()       |       min_digits        |
-|       ->maxDigits()       |       max_digits        |
-|        ->integer()        |         integer         |
-|        ->numeric()        |         numeric         |
-|        ->digits()         |        digits:1         |
-|     ->digitsBetween()     |       digits:1,4        |
-|        ->decimal()        |         decimal         |
-|     **String Rules**      |    **String Rules**     |
-|         ->alpha()         |          alpha          |
-|       ->alphaDash()       |       alpha_dash        |
-|       ->alphaNum()        |        alpha_num        |
-|        ->string()         |         string          |
-|       ->uppercase()       |        uppercase        |
-|       ->lowercase()       |        lowercase        |
-|         ->regex()         |      regex:pattern      |
-|       ->hexColor()        |        hex_color        |
-|       ->hexColor()        |        hex_color        |
-|         ->json()          |          json           |
-|          ->url()          |  url or url:http,https  |
-|         ->uuid()          |          uuid           |
-|         ->ulid()          |          ulid           |
-|      **Date Rules**       |     **Date Rules**      |
-|       ->timezone()        |        timezone         |
-|         ->date()          |          date           |
-|      ->dateFormat()       |       date_format       |
-|      ->dateEquals()       |       date_equals       |
-|      ->dateBefore()       |         before          |
-|   ->dateBeforeOrEqual()   |     before_or_equal     |
-|       ->dateAfter()       |          after          |
-| ->dateAfterOrEqualToday() |  after_or_equal:today   |
-|   ->dateAfterOrEquals()   |     after_or_equal      |
-|  **IP Mac Address Rule**  | **IP Mac Address Rule** |
-|          ->ip()           |           ip            |
-|         ->ipv4()          |          ipv4           |
-|         ->ipv6()          |          ipv6           |
-|      ->macAddress()       |       mac_address       |
+|        **Methods**        |    **Laravel Rule**     | **Methods**        | **Rule**                   |
+|:-------------------------:|:-----------------------:|--------------------|----------------------------|
+|     Rule::required()      |        required         | ->startsWith()     | starts_with:foo,bar...     |
+|     Rule::nullable()      |        nullable         | ->uppercaseFirst() | new UppercaseFirstLetter() |
+|      Rule::boolean()      |         boolean         |                    |                            |
+|       Rule::rules()       |      custom rules       |                    |                            |
+|         ->email()         |          email          |                    |                            |
+|      ->uniqueEmail()      |   unique:users,email    |                    |                            |
+|     **Integer Rules**     |    **Integer Rules**    |                    |                            |
+|          ->min()          |           min           |                    |                            |
+|          ->max()          |           max           |                    |                            |
+|       ->minDigits()       |       min_digits        |                    |                            |
+|       ->maxDigits()       |       max_digits        |                    |                            |
+|        ->integer()        |         integer         |                    |                            |
+|        ->numeric()        |         numeric         |                    |                            |
+|        ->digits()         |        digits:1         |                    |                            |
+|     ->digitsBetween()     |       digits:1,4        |                    |                            |
+|        ->decimal()        |         decimal         |                    |                            |
+|     **String Rules**      |    **String Rules**     |                    |                            |
+|         ->alpha()         |          alpha          |                    |                            |
+|       ->alphaDash()       |       alpha_dash        |                    |                            |
+|       ->alphaNum()        |        alpha_num        |                    |                            |
+|        ->string()         |         string          |                    |                            |
+|       ->uppercase()       |        uppercase        |                    |                            |
+|       ->lowercase()       |        lowercase        |                    |                            |
+|         ->regex()         |      regex:pattern      |                    |                            |
+|       ->hexColor()        |        hex_color        |                    |                            |
+|       ->hexColor()        |        hex_color        |                    |                            |
+|         ->json()          |          json           |                    |                            |
+|          ->url()          |  url or url:http,https  |                    |                            |
+|         ->uuid()          |          uuid           |                    |                            |
+|         ->ulid()          |          ulid           |                    |                            |
+|      **Date Rules**       |     **Date Rules**      |                    |                            |
+|       ->timezone()        |        timezone         |                    |                            |
+|         ->date()          |          date           |                    |                            |
+|      ->dateFormat()       |       date_format       |                    |                            |
+|      ->dateEquals()       |       date_equals       |                    |                            |
+|      ->dateBefore()       |         before          |                    |                            |
+|   ->dateBeforeOrEqual()   |     before_or_equal     |                    |                            |
+|       ->dateAfter()       |          after          |                    |                            |
+| ->dateAfterOrEqualToday() |  after_or_equal:today   |                    |                            |
+|   ->dateAfterOrEquals()   |     after_or_equal      |                    |                            |
+|  **IP Mac Address Rule**  | **IP Mac Address Rule** |                    |                            |
+|          ->ip()           |           ip            |                    |                            |
+|         ->ipv4()          |          ipv4           |                    |                            |
+|         ->ipv6()          |          ipv6           |                    |                            |
+|      ->macAddress()       |       mac_address       |                    |                            |
+
+</div>
+
+
+<div id="writing-messages">
+
+### When you
+
+```<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Shergela\Validations\Validation\Rule;
+
+class TestRequest extends FormRequest
+{
+/**
+* @return bool
+*/
+public function authorize(): bool
+{
+return true;
+}
+
+    public function rules(): array
+    {
+        return [
+            'name' => [
+                Rule::required()->email()->messages(
+                    messages: [
+                        'name.required' => 'The name field is required.',
+                        'email.required' => 'The email field is required.',
+                    ]
+                )
+            ],
+        ];
+    }
+}
+```
 
 </div>
 
