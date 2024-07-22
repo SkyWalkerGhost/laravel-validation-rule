@@ -79,7 +79,7 @@ return [
 
 <div id="writing-messages">
 
-### When you
+### Writing custom messages
 
 ```<?php
 

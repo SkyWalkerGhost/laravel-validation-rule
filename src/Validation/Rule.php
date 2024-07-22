@@ -9,11 +9,9 @@ use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\Validator;
-use Psy\Util\Str;
 use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
 use Shergela\Validations\Enums\ValidationRuleEnum as RuleEnum;
 use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
-use Shergela\Validations\Rules\UppercaseFirstLetter;
 
 class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
 {
