@@ -166,6 +166,20 @@ class BuildValidationRule
      */
     protected bool $hexColor = false;
 
+    protected ?string $url = null;
+
+    /**
+     * @var bool
+     * The field under validation must be a valid Universally Unique Lexicographically Sortable Identifier (ULID).
+     */
+    protected bool $ulid = false;
+
+    /**
+     * @var bool
+     * The field under validation must be a valid RFC 4122 (version 1, 3, 4, or 5) universally unique identifier (UUID).
+     */
+    protected bool $uuid = false;
+
     /**
      * @var bool
      */
@@ -221,6 +235,8 @@ class BuildValidationRule
             ...($this->email === true ? [Rule::EMAIL] : []),
             ...($this->uniqueEmail !== null ? [$this->uniqueEmail] : []),
             ...($this->hexColor === true ? [Rule::HEX_COLOR] : []),
+            ...($this->uuid === true ? [Rule::UUID] : []),
+            ...($this->ulid === true ? [Rule::ULID] : []),
 
             /**
              * IP | MAC address validations
@@ -257,6 +273,7 @@ class BuildValidationRule
             ...($this->upperCase === true ? [StringRule::UPPERCASE] : []),
             ...($this->lowerCase === true ? [StringRule::LOWERCASE] : []),
             ...($this->json === true ? [StringRule::JSON] : []),
+            ...($this->url !== null ? [$this->url] : []),
 
             /**
              * --------------------------------------------------------------------------------

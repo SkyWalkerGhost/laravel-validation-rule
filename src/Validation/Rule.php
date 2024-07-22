@@ -3,6 +3,7 @@
 namespace Shergela\Validations\Validation;
 
 use Closure;
+use Dotenv\Util\Str;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
@@ -43,7 +44,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * Additional validation rules that should be merged into the default rules during validation.
      * @var array<string>
      */
-    protected array $customRules = [];
+    protected static array $customRules = [];
 
     /**
      * @param Validator $validator
@@ -242,6 +243,43 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
+     * @param string|null $protocol
+     * @return $this
+     */
+    public function url(string $protocol = null): static
+    {
+        if ($protocol !== null) {
+            $this->url = StringRule::URL . ':' . $protocol;
+
+            return $this;
+        }
+
+        $this->url = StringRule::URL;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function uuid(): static
+    {
+        $this->uuid = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function ulid(): static
+    {
+        $this->ulid = true;
+
+        return $this;
+    }
+
+    /**
      * @return $this
      */
     public function integer(): static
@@ -385,17 +423,6 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param string $timezone
-     * @return $this
-     */
-    public function timezone(string $timezone): static
-    {
-        $this->timezone = $timezone;
-
-        return $this;
-    }
-
-    /**
      * @return $this
      */
     public function uppercase(): static
@@ -512,13 +539,13 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * Specify additional validation rules that should be merged with the default rules during validation.
      * @param array<string>|string $rules
-     * @return $this
+     * @return Rule
      */
-    public function rules(array|string $rules): static
+    public static function rules(array|string $rules): Rule
     {
-        $this->customRules = Arr::wrap($rules);
+        static::$customRules = Arr::wrap($rules);
 
-        return $this;
+        return new self();
     }
 
     /**
@@ -526,11 +553,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      */
     private function getValidationRules(): array
     {
-        if (empty($this->customRules)) {
+        if (empty(static::$customRules)) {
             return $this->buildValidationRules();
         }
 
-        return array_merge($this->customRules, $this->buildValidationRules());
+        return array_merge(static::$customRules, $this->buildValidationRules());
     }
 
     /**

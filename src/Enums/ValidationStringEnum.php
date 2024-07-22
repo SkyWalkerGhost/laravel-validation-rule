@@ -38,4 +38,9 @@ enum ValidationStringEnum: string
      * The field under validation must be a valid JSON string.
     */
     public const JSON = 'json';
+
+    /**
+     * The field under validation must be a valid URL.
+     */
+    public const URL = 'url';
 }

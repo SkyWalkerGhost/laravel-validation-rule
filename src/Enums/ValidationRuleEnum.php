@@ -30,4 +30,14 @@ enum ValidationRuleEnum: string
      * The field under validation must contain a valid color value in hexadecimal format.
      */
     public const HEX_COLOR = 'hex_color';
+
+    /**
+     * The field under validation must be a valid RFC 4122 (version 1, 3, 4, or 5) universally unique identifier (UUID).
+     */
+    public const UUID = 'uuid';
+
+    /**
+     * The field under validation must be a valid Universally Unique Lexicographically Sortable Identifier (ULID).
+     */
+    public const ULID = 'ulid';
 }

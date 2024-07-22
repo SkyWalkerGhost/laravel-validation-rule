@@ -32,9 +32,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "1.x"
-        },
         "laravel": {
             "providers": [
                 "Shergela\\Validations\\ShergelaValidationsServiceProvider"
