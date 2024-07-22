@@ -4,7 +4,7 @@
 Require the package with composer using the following command:
 
 ```
-composer require shergela/laravel-validation-rule
+composer require shergela/validation-rule
 ```
 
 ### ServiceProvide
