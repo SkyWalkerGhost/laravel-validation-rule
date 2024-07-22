@@ -1,6 +1,6 @@
 {
-    "name": "shergela/laravel-validation-rule",
-    "description": "Build custom validation rules",
+    "name": "shergela/validation-rule",
+    "description": "Build custom laravel validation rules",
     "type": "package",
     "license": "MIT",
     "autoload": {
