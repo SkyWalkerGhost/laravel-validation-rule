@@ -3,7 +3,6 @@
 namespace Shergela\Validations\Validation;
 
 use Closure;
-use Dotenv\Util\Str;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
