@@ -254,6 +254,18 @@ class BuildValidationRule
     protected ?int $size = null;
 
     /**
+     * @var string|null
+     * The field under validation must be included in the given list of values in:foo,bar...
+     */
+    protected static ?string $in = null;
+
+    /**
+     * @var string|null
+     * The field under validation must not be included in the given list of values not_in:foo,bar...
+     */
+    protected static ?string $notIn = null;
+
+    /**
      * @return array<UppercaseFirstLetter|string>
      */
     protected function buildValidationRules(): array
@@ -267,6 +279,8 @@ class BuildValidationRule
             ...(static::$required === true ? [Rule::REQUIRED] : []),
             ...(static::$nullable === true ? [Rule::NULLABLE] : []),
             ...(static::$boolean === true ? [Rule::BOOLEAN] : []),
+            ...(static::$in !== null ? [static::$in] : []),
+            ...(static::$notIn !== null ? [static::$notIn] : []),
             ...($this->email === true ? [Rule::EMAIL] : []),
             ...($this->uniqueEmail !== null ? [$this->uniqueEmail] : []),
             ...($this->hexColor === true ? [Rule::HEX_COLOR] : []),

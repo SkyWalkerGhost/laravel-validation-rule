@@ -12,6 +12,7 @@ use Illuminate\Validation\Validator;
 use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
 use Shergela\Validations\Enums\ValidationRuleEnum as RuleEnum;
 use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
+use Shergela\Validations\Rules\UppercaseFirstLetter;
 
 class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
 {
@@ -43,7 +44,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * Additional validation rules that should be merged into the default rules during validation.
      * @var array<string>
      */
-    protected static array $customRules = [];
+    protected array $customRules = [];
 
     /**
      * @param Validator $validator
@@ -242,13 +243,13 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param string|null $protocol
+     * @param array<string> $protocols
      * @return $this
      */
-    public function url(string $protocol = null): static
+    public function url(array $protocols = []): static
     {
-        if ($protocol !== null) {
-            $this->url = StringRule::URL . ':' . $protocol;
+        if (!empty($protocols)) {
+            $this->url = StringRule::URL . ':' . implode(',', $protocols);
 
             return $this;
         }
@@ -599,15 +600,16 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
     /**
      * Specify additional validation rules that should be merged with the default rules during validation.
-     * @param array<string>|string $rules
-     * @return Rule
+     * @param array<string> $rules
+     * @return $this
      */
-    public static function rules(array|string $rules): Rule
+    public function rules(array $rules): static
     {
-        static::$customRules = Arr::wrap($rules);
+        $this->customRules = $rules;
 
-        return new self();
+        return $this;
     }
+
 
     /**
      * @param int $size
@@ -621,15 +623,41 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @return array<string>
+     * @param array<string> $values
+     * @return Rule
+     */
+    public static function in(array $values): Rule
+    {
+        $implode = implode(',', $values);
+
+        static::$in = RuleEnum::IN . $implode;
+
+        return new self();
+    }
+
+    /**
+     * @param array<string> $values
+     * @return Rule
+     */
+    public static function notIn(array $values): Rule
+    {
+        $implode = implode(',', $values);
+
+        static::$notIn = RuleEnum::NOT_IN . $implode;
+
+        return new self();
+    }
+
+    /**
+     * @return array<UppercaseFirstLetter|string>
      */
     private function getValidationRules(): array
     {
-        if (empty(static::$customRules)) {
+        if (empty($this->customRules)) {
             return $this->buildValidationRules();
         }
 
-        return array_merge(static::$customRules, $this->buildValidationRules());
+        return array_merge($this->customRules, $this->buildValidationRules());
     }
 
     /**
