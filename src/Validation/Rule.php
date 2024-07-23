@@ -610,6 +610,17 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         return $this;
     }
 
+    /**
+     * @param array<string> $attributes
+     * @return $this
+     */
+    public function attributes(array $attributes): static
+    {
+        $this->validator->customAttributes = $attributes;
+
+        return $this;
+    }
+
 
     /**
      * @param int $size
