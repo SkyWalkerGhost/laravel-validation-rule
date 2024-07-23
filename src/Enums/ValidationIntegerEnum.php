@@ -40,4 +40,15 @@ enum ValidationIntegerEnum: string
      * The integer under validation must have a maximum length of value.
      */
     public const MAX_DIGITS = 'max_digits:';
+
+    /**
+     * The field under validation must have a size matching the given value.
+     * For string data, the value corresponds to the number of characters.
+     * For numeric data, value corresponds to a given integer value
+     * (the attribute must also have the numeric or integer rule).
+     * For an array, size corresponds to the count of the array.
+     * For files,
+     * size corresponds to the file size in kilobytes.
+     */
+    public const SIZE = 'size:';
 }

@@ -64,9 +64,27 @@ class BuildValidationRule
 
     /**
      * @var string|null
-     * The field under validation must start with one of the given values.
+     * The field under validation must start with one of the given values starts_with:foo,bar.
      */
     protected ?string $startsWith = null;
+
+    /**
+     * @var string|null
+     * The field under validation must end with one of the given values ends_with:foo,bar
+     */
+    protected ?string $endsWith = null;
+
+    /**
+     * @var string|null
+     * The field under validation must not start with one of the given values doesnt_start_with:foo,bar
+     */
+    protected ?string $doesntStartWith = null;
+
+    /**
+     * @var string|null
+     * The field under validation must not start with one of the given values doesnt_end_with:foo,bar
+     */
+    protected ?string $doesntEndWith = null;
 
     /**
      * @var bool
@@ -231,7 +249,12 @@ class BuildValidationRule
     protected ?string $maxDigits = null;
 
     /**
-     * @return array<int, string>
+     * @var int|null
+     */
+    protected ?int $size = null;
+
+    /**
+     * @return array<UppercaseFirstLetter|string>
      */
     protected function buildValidationRules(): array
     {
@@ -263,6 +286,7 @@ class BuildValidationRule
              * Numeric Validations
              *--------------------------------------------------------------------------------
              */
+            ...($this->size !== null ? [IntegerRule::SIZE . $this->size] : []),
             ...($this->min !== null ? [IntegerRule::MIN . $this->min] : []),
             ...($this->max !== null ? [IntegerRule::MAX . $this->max] : []),
             ...($this->integer === true ? [IntegerRule::INTEGER] : []),
@@ -287,6 +311,9 @@ class BuildValidationRule
             ...($this->json === true ? [StringRule::JSON] : []),
             ...($this->url !== null ? [$this->url] : []),
             ...($this->startsWith !== null ? [$this->startsWith] : []),
+            ...($this->endsWith !== null ? [$this->endsWith] : []),
+            ...($this->doesntStartWith !== null ? [$this->doesntStartWith] : []),
+            ...($this->doesntEndWith !== null ? [$this->doesntEndWith] : []),
             ...($this->uppercaseFirst === true ? [new UppercaseFirstLetter()] : []),
 
             /**

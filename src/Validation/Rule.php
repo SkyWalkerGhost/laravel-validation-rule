@@ -465,6 +465,45 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
+     * @param array<string> $with
+     * @return $this
+     */
+    public function endsWith(array $with): static
+    {
+        $implode = implode(',', $with);
+
+        $this->endsWith = StringRule::ENDS_WITH . $implode;
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $with
+     * @return $this
+     */
+    public function doesntStartWith(array $with): static
+    {
+        $implode = implode(',', $with);
+
+        $this->doesntStartWith = StringRule::DOESNT_START_WITH . $implode;
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $with
+     * @return $this
+     */
+    public function doesntEndWith(array $with): static
+    {
+        $implode = implode(',', $with);
+
+        $this->doesntEndWith = StringRule::DOESNT_END_WITH . $implode;
+
+        return $this;
+    }
+
+    /**
      * @param string $pattern
      * @return $this
      */
@@ -571,6 +610,17 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
+     * @param int $size
+     * @return $this
+     */
+    public function size(int $size): static
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
      * @return array<string>
      */
     private function getValidationRules(): array
@@ -596,6 +646,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
             rules: [$attribute => $this->getValidationRules()],
             messages: $this->validator->customMessages,
         )->stopOnFirstFailure();
+
 
         if ($validator->fails()) {
             return $this->fail($validator->messages()->all());
