@@ -2,6 +2,12 @@
 
 All notable changes to `shergela/validation-rule` will be documented in this file.
 
+## 1.0.1 - Friday 08, August - 2024
+
+- add new `separateIntegersByComma()` method
+- add new `separateStringsByComma()` method
+- add new `separateStringsByUnderscore()` method
+
 ## 1.0.0 - Tuesday 23, July - 2024
 
 - add new `size()` method

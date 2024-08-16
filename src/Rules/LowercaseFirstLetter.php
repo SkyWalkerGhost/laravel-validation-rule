@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
-class UppercaseFirstLetter implements ValidationRule
+class LowercaseFirstLetter implements ValidationRule
 {
     /**
      * @param string $attribute
@@ -23,8 +23,8 @@ class UppercaseFirstLetter implements ValidationRule
             $fail('The :attribute must be a alphabetical string.');
         }
 
-        if (Str::ucfirst($toString) !== $value) {
-            $fail('The first character of :attribute must be uppercase letter.');
+        if (Str::lcfirst($toString) !== $value) {
+            $fail('The first character of :attribute must be lowercase letter.');
         }
     }
 }

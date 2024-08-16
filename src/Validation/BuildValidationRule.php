@@ -8,6 +8,12 @@ use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
 use Shergela\Validations\Enums\ValidationRegexEnum as RegexRule;
 use Shergela\Validations\Enums\ValidationRuleEnum as Rule;
 use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
+use Shergela\Validations\Rules\LowercaseFirstLetter;
+use Shergela\Validations\Rules\SeparateIntegersByComma;
+use Shergela\Validations\Rules\SeparateStringsByComma;
+use Shergela\Validations\Rules\SeparateStringsByUnderscore;
+use Shergela\Validations\Rules\TimezoneValidation;
+use Shergela\Validations\Rules\TimezoneRegionValidation;
 use Shergela\Validations\Rules\UppercaseFirstLetter;
 
 class BuildValidationRule
@@ -172,6 +178,18 @@ class BuildValidationRule
     protected ?string $timezone = null;
 
     /**
+     * @var array<string>|null
+     */
+    protected ?array $timezones = null;
+
+    /**
+     * @var array<string>
+     */
+    protected array $timezoneIdentifierCities = [];
+    protected ?int $dateTimezoneGroupNumber = null;
+    protected ?string $dateTimezoneGroupName = null;
+
+    /**
      * @var bool
      */
     protected bool $uppercase = false;
@@ -179,7 +197,8 @@ class BuildValidationRule
     /**
      * @var bool
      */
-    protected bool $uppercaseFirst = false;
+    protected bool $uppercaseFirstLetter = false;
+    protected bool $lowercaseFirstLetter = false;
 
     /**
      * @var bool
@@ -190,6 +209,13 @@ class BuildValidationRule
      * @var string|null
      */
     protected ?string $regexPattern = null;
+
+    /**
+     * @var bool
+     */
+    protected bool $separateIntegersByComma = false;
+    protected bool $separateStringsByComma = false;
+    protected bool $separateStringsByUnderscore = false;
 
     /**
      * @var bool
@@ -266,7 +292,7 @@ class BuildValidationRule
     protected static ?string $notIn = null;
 
     /**
-     * @return array<UppercaseFirstLetter|string>
+     * @return array<UppercaseFirstLetter|SeparateIntegersByComma|SeparateStringsByComma|SeparateStringsByUnderscore|string>
      */
     protected function buildValidationRules(): array
     {
@@ -328,7 +354,8 @@ class BuildValidationRule
             ...($this->endsWith !== null ? [$this->endsWith] : []),
             ...($this->doesntStartWith !== null ? [$this->doesntStartWith] : []),
             ...($this->doesntEndWith !== null ? [$this->doesntEndWith] : []),
-            ...($this->uppercaseFirst === true ? [new UppercaseFirstLetter()] : []),
+            ...($this->uppercaseFirstLetter === true ? [new UppercaseFirstLetter()] : []),
+            ...($this->lowercaseFirstLetter === true ? [new LowercaseFirstLetter()] : []),
 
             /**
              * --------------------------------------------------------------------------------
@@ -339,7 +366,19 @@ class BuildValidationRule
             ...($this->dateEquals !== null ? [DateRule::DATE_EQUALS . $this->dateEquals] : []),
             ...($this->dateBefore !== null ? [DateRule::DATE_BEFORE . $this->dateBefore] : []),
             ...($this->dateFormat !== null ? [DateRule::DATE_FORMAT . $this->dateFormat] : []),
-            ...($this->timezone !== null ? [DateRule::TIMEZONE . $this->timezone] : []),
+            ...($this->timezone !== null ? [DateRule::TIMEZONE_ALL] : []),
+            ...($this->timezones !== null ? [new TimezoneValidation(timezones: $this->timezones)] : []),
+
+            ...(!empty($this->timezoneIdentifierCities)
+                ? [
+                    new TimezoneRegionValidation(
+                        cities: $this->timezoneIdentifierCities,
+                        timezoneGroupNumber: $this->dateTimezoneGroupNumber,
+                        timezoneGroup: $this->dateTimezoneGroupName
+                    )
+                ]
+                : []),
+
             ...($this->dateBeforeOrEqual !== null
                 ? [DateRule::DATE_BEFORE_OR_EQUAL . $this->dateBeforeOrEqual]
                 : []
@@ -355,6 +394,9 @@ class BuildValidationRule
              * Regex validations
              */
             ...($this->regexPattern !== null ? [RegexRule::RULE . $this->regexPattern] : []),
+            ...($this->separateIntegersByComma === true ? [new SeparateIntegersByComma()] : []),
+            ...($this->separateStringsByComma === true ? [new SeparateStringsByComma()] : []),
+            ...($this->separateStringsByUnderscore === true ? [new SeparateStringsByUnderscore()] : []),
         ];
     }
 }

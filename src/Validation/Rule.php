@@ -3,15 +3,23 @@
 namespace Shergela\Validations\Validation;
 
 use Closure;
+use DateTimeZone;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
+use Shergela\Validations\Enums\DatetimeZoneAbbreviationEnum;
+use Shergela\Validations\Enums\ValidationDateEnum;
 use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
+use Shergela\Validations\Enums\ValidationRegexEnum;
 use Shergela\Validations\Enums\ValidationRuleEnum as RuleEnum;
 use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
+use Shergela\Validations\Rules\SeparateIntegersByComma;
+use Shergela\Validations\Rules\SeparateStringsByComma;
+use Shergela\Validations\Rules\SeparateStringsByUnderscore;
 use Shergela\Validations\Rules\UppercaseFirstLetter;
 
 class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
@@ -406,6 +414,203 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
+     * @param string|null $timezone
+     * @return $this
+     */
+    public function timezone(string $timezone = null): static
+    {
+        if ($timezone !== null) {
+            $this->timezone = ValidationDateEnum::TIMEZONE . $timezone;
+            return $this;
+        }
+
+        $this->timezone = ValidationDateEnum::TIMEZONE_ALL;
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $timezones
+     * @return $this
+     */
+    public function timezones(array $timezones): static
+    {
+        $this->timezones = $timezones;
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneAfrica(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::AFRICA,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::AFRICA;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::AFRICA);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneAsia(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::ASIA,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::ASIA;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::ASIA);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneEurope(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::EUROPE,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::EUROPE;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::EUROPE);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneAmerica(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::AMERICA,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::AMERICA;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::AMERICA);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneAntarctica(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::ANTARCTICA,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::ANTARCTICA;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::ANTARCTICA);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneArctic(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::ARCTIC,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::ARCTIC;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::ARCTIC);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneAtlantic(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::ATLANTIC,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::ATLANTIC;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::ATLANTIC);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneAustralia(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::AUSTRALIA,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::AUSTRALIA;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::AUSTRALIA);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezoneIndian(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::INDIAN,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::INDIAN;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::INDIAN);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @return $this
+     */
+    public function timezonePacific(array $cities): static
+    {
+        $this->timezoneIdentifierCities = $this->collectCities(
+            cities: $cities,
+            timezone: DatetimeZoneAbbreviationEnum::PACIFIC,
+        );
+
+        $this->dateTimezoneGroupNumber = DateTimeZone::PACIFIC;
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::PACIFIC);
+
+        return $this;
+    }
+
+    /**
      * @param int $first
      * @param int|null $second
      * @return $this
@@ -435,9 +640,19 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @return $this
      */
-    public function uppercaseFirst(): static
+    public function uppercaseFirstLetter(): static
     {
-        $this->uppercaseFirst = true;
+        $this->uppercaseFirstLetter = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function lowercaseFirstLetter(): static
+    {
+        $this->lowercaseFirstLetter = true;
 
         return $this;
     }
@@ -511,6 +726,36 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     public function regex(string $pattern): static
     {
         $this->regexPattern = $pattern;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function separateIntegersByComma(): static
+    {
+        $this->separateIntegersByComma = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function separateStringsByComma(): static
+    {
+        $this->separateStringsByComma = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function separateStringsByUnderscore(): static
+    {
+        $this->separateStringsByUnderscore = true;
 
         return $this;
     }
@@ -660,7 +905,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @return array<UppercaseFirstLetter|string>
+     * @return array<UppercaseFirstLetter|SeparateIntegersByComma|SeparateStringsByComma|SeparateStringsByUnderscore|string>
      */
     private function getValidationRules(): array
     {
@@ -705,5 +950,20 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->messages = array_merge($this->messages, Arr::wrap($messages));
 
         return false;
+    }
+
+    /**
+     * @param array<string> $cities
+     * @param string $timezone
+     * @return array<string>
+     */
+    private function collectCities(array $cities, string $timezone): array
+    {
+        /** @var array<string> $cities */
+        $cities = collect($cities)->map(function ($city) use ($timezone) {
+            return strtolower($timezone . '/' . $city);
+        })->toArray();
+
+        return $cities;
     }
 }

@@ -4,9 +4,9 @@ namespace Shergela\Validations\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Str;
+use Shergela\Validations\Enums\ValidationRegexEnum as Regex;
 
-class UppercaseFirstLetter implements ValidationRule
+class SeparateStringsByComma implements ValidationRule
 {
     /**
      * @param string $attribute
@@ -19,12 +19,8 @@ class UppercaseFirstLetter implements ValidationRule
         /** @var string $toString */
         $toString = $value;
 
-        if (is_numeric($toString)) {
-            $fail('The :attribute must be a alphabetical string.');
-        }
-
-        if (Str::ucfirst($toString) !== $value) {
-            $fail('The first character of :attribute must be uppercase letter.');
+        if (! preg_match(pattern: Regex::SEPARATE_STRINGS_BY_COMMA, subject: $toString)) {
+            $fail("Please separate (:attribute) values by comma. Entered value: {$toString}");
         }
     }
 }
