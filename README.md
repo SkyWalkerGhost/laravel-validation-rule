@@ -26,57 +26,79 @@ return [
 
 <div id="create-rule">
 
-## Available rules (47)
+## Available rules
 
-|        **Methods**        |   **Laravel Rule**    |           **Methods**           |             **Rule**              |
-|:-------------------------:|:---------------------:|:-------------------------------:|:---------------------------------:|
-|     Rule::required()      |       required        |         ->startsWith()          |      starts_with:foo,bar...       |
-|     Rule::nullable()      |       nullable        |    ->uppercaseFirstLetter()     |    new UppercaseFirstLetter()     |
-|      Rule::boolean()      |        boolean        |            ->size()             |               size                |
-|       Rule::rules()       |     custom rules      |          ->endsWith()           |         ends_with:foo,bar         |
-|         ->email()         |         email         |       ->doesntStartWith()       |     doesnt_start_with:foo,bar     |
-|      ->uniqueEmail()      |  unique:users,email   |        ->doesntEndWith()        |      doesnt_end_with:foo,bar      |
-|          ->min()          |          min          |             ->in()              |           in:foo,bar...           |
-|          ->max()          |          max          |            ->notIn()            |       not_in:foo,bar,baz...       |
-|       ->minDigits()       |      min_digits       |   ->separateIntegersByComma()   |   new SeparateIntegersByComma()   |
-|       ->maxDigits()       |      max_digits       |   ->separateStringsByComma()    |   new SeparateStringsByComma()    |
-|        ->integer()        |        integer        | ->separateStringsByUnderscore() | new SeparateStringsByUnderscore() |
-|        ->numeric()        |        numeric        |          ->timezones()          |     new TimezoneValidation()      |
-|        ->digits()         |       digits:1        |        ->timezoneAsia()         |  new TimezoneRegionValidation()   |
-|     ->digitsBetween()     |      digits:1,4       |       ->timezoneEurope()        |  new TimezoneRegionValidation()   |
-|        ->decimal()        |        decimal        |       ->timezoneAmerica()       |  new TimezoneRegionValidation()   |
-|         ->alpha()         |         alpha         |     ->timezoneAntarctica()      |  new TimezoneRegionValidation()   |
-|       ->alphaDash()       |      alpha_dash       |       ->timezoneArctic()        |  new TimezoneRegionValidation()   |
-|       ->alphaNum()        |       alpha_num       |      ->timezoneAtlantic()       |  new TimezoneRegionValidation()   |
-|        ->string()         |        string         |      ->timezoneAustralia()      |  new TimezoneRegionValidation()   |
-|       ->uppercase()       |       uppercase       |       ->timezoneIndian()        |  new TimezoneRegionValidation()   |
-|       ->lowercase()       |       lowercase       |       ->timezonePacific()       |  new TimezoneRegionValidation()   |
-|         ->regex()         |     regex:pattern     |    ->lowercaseFirstLetter()     |    new LowercaseFirstLetter()     |
-|       ->hexColor()        |       hex_color       |                                 |                                   |
-|         ->json()          |         json          |                                 |                                   |
-|          ->url()          | url or url:http,https |                                 |                                   |
-|         ->uuid()          |         uuid          |                                 |                                   |
-|         ->ulid()          |         ulid          |                                 |                                   |
-|       ->timezone()        |       timezone        |                                 |                                   |
-|         ->date()          |         date          |                                 |                                   |
-|      ->dateFormat()       |      date_format      |                                 |                                   |
-|      ->dateEquals()       |      date_equals      |                                 |                                   |
-|      ->dateBefore()       |        before         |                                 |                                   |
-|   ->dateBeforeOrEqual()   |    before_or_equal    |                                 |                                   |
-|       ->dateAfter()       |         after         |                                 |                                   |
-| ->dateAfterOrEqualToday() | after_or_equal:today  |                                 |                                   |
-|   ->dateAfterOrEquals()   |    after_or_equal     |                                 |                                   |
-|          ->ip()           |          ip           |                                 |                                   |
-|         ->ipv4()          |         ipv4          |                                 |                                   |
-|         ->ipv6()          |         ipv6          |                                 |                                   |
-|      ->macAddress()       |      mac_address      |                                 |                                   |
-
+|           **Methods**           |         **Laravel Rule**          |
+|:-------------------------------:|:---------------------------------:|
+|        Rule::required()         |             required              |
+|        Rule::nullable()         |             nullable              |
+|         Rule::boolean()         |              boolean              |
+|          Rule::rules()          |           custom rules            |
+|            ->email()            |               email               |
+|         ->uniqueEmail()         |        unique:users,email         |
+|             ->min()             |                min                |
+|             ->max()             |                max                |
+|          ->minDigits()          |            min_digits             |
+|          ->maxDigits()          |            max_digits             |
+|           ->integer()           |              integer              |
+|           ->numeric()           |              numeric              |
+|           ->digits()            |             digits:1              |
+|        ->digitsBetween()        |            digits:1,4             |
+|           ->decimal()           |              decimal              |
+|            ->alpha()            |               alpha               |
+|          ->alphaDash()          |            alpha_dash             |
+|          ->alphaNum()           |             alpha_num             |
+|           ->string()            |              string               |
+|          ->uppercase()          |             uppercase             |
+|          ->lowercase()          |             lowercase             |
+|            ->regex()            |           regex:pattern           |
+|          ->hexColor()           |             hex_color             |
+|            ->json()             |               json                |
+|             ->url()             |       url or url:http,https       |
+|            ->uuid()             |               uuid                |
+|            ->ulid()             |               ulid                |
+|          ->timezone()           |             timezone              |
+|            ->date()             |               date                |
+|         ->dateFormat()          |            date_format            |
+|         ->dateEquals()          |            date_equals            |
+|         ->dateBefore()          |              before               |
+|      ->dateBeforeOrEqual()      |          before_or_equal          |
+|          ->dateAfter()          |               after               |
+|    ->dateAfterOrEqualToday()    |       after_or_equal:today        |
+|      ->dateAfterOrEquals()      |          after_or_equal           |
+|             ->ip()              |                ip                 |
+|            ->ipv4()             |               ipv4                |
+|            ->ipv6()             |               ipv6                |
+|         ->macAddress()          |            mac_address            |
+|         ->startsWith()          |      starts_with:foo,bar...       |
+|            ->size()             |               size                |
+|          ->endsWith()           |         ends_with:foo,bar         |
+|       ->doesntStartWith()       |     doesnt_start_with:foo,bar     |
+|        ->doesntEndWith()        |      doesnt_end_with:foo,bar      |
+|             ->in()              |           in:foo,bar...           |
+|            ->notIn()            |       not_in:foo,bar,baz...       |
+|            ->regex()            |           regex:pattern           |
+|    ->uppercaseFirstLetter()     |    new UppercaseFirstLetter()     |
+|    ->lowercaseFirstLetter()     |  new TimezoneRegionValidation()   |
+|   ->separateIntegersByComma()   |   new SeparateIntegersByComma()   |
+|   ->separateStringsByComma()    |   new SeparateStringsByComma()    |
+| ->separateStringsByUnderscore() | new SeparateStringsByUnderscore() |
+|          ->timezones()          |     new TimezoneValidation()      |
+|        ->timezoneAsia()         |  new TimezoneRegionValidation()   |
+|       ->timezoneEurope()        |  new TimezoneRegionValidation()   |
+|       ->timezoneAmerica()       |  new TimezoneRegionValidation()   |
+|     ->timezoneAntarctica()      |  new TimezoneRegionValidation()   |
+|       ->timezoneArctic()        |  new TimezoneRegionValidation()   |
+|      ->timezoneAtlantic()       |  new TimezoneRegionValidation()   |
+|      ->timezoneAustralia()      |  new TimezoneRegionValidation()   |
+|       ->timezoneIndian()        |  new TimezoneRegionValidation()   |
+|       ->timezonePacific()       |  new TimezoneRegionValidation()   |
 </div>
 
 
 <div id="writing-messages">
 
-### Writing custom messages
+### Writing custom rule and message
 
 ```php
 
@@ -92,7 +114,7 @@ class TestRequest extends FormRequest
 */
 public function authorize(): bool
 {
-return true;
+    return true;
 }
 
     public function rules(): array
