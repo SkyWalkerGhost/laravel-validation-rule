@@ -10,7 +10,7 @@ class TimezoneValidation implements ValidationRule
     /**
      * @param array<string> $timezones
      */
-    public function __construct(protected array $timezones)
+    public function __construct(protected readonly array $timezones)
     {
     }
 

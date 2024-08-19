@@ -186,8 +186,17 @@ class BuildValidationRule
      * @var array<string>
      */
     protected array $timezoneIdentifierCities = [];
-    protected ?int $dateTimezoneGroupNumber = null;
-    protected ?string $dateTimezoneGroupName = null;
+
+    /**
+     * @var int
+     * No timezone
+     */
+    protected int $dateTimezoneGroupNumber = 0;
+
+    /**
+     * @var string
+     */
+    protected string $dateTimezoneGroupName = '';
 
     /**
      * @var bool
@@ -197,13 +206,13 @@ class BuildValidationRule
     /**
      * @var bool
      */
-    protected bool $uppercaseFirstLetter = false;
-    protected bool $lowercaseFirstLetter = false;
+    protected bool $lowerCase = false;
 
     /**
      * @var bool
      */
-    protected bool $lowerCase = false;
+    protected bool $uppercaseFirstLetter = false;
+    protected bool $lowercaseFirstLetter = false;
 
     /**
      * @var string|null
@@ -214,7 +223,15 @@ class BuildValidationRule
      * @var bool
      */
     protected bool $separateIntegersByComma = false;
+
+    /**
+     * @var bool
+     */
     protected bool $separateStringsByComma = false;
+
+    /**
+     * @var bool
+     */
     protected bool $separateStringsByUnderscore = false;
 
     /**
@@ -222,6 +239,9 @@ class BuildValidationRule
      */
     protected bool $hexColor = false;
 
+    /**
+     * @var string|null
+     */
     protected ?string $url = null;
 
     /**
@@ -369,7 +389,8 @@ class BuildValidationRule
             ...($this->timezone !== null ? [DateRule::TIMEZONE_ALL] : []),
             ...($this->timezones !== null ? [new TimezoneValidation(timezones: $this->timezones)] : []),
 
-            ...(!empty($this->timezoneIdentifierCities)
+            ...(
+                !empty($this->timezoneIdentifierCities)
                 ? [
                     new TimezoneRegionValidation(
                         cities: $this->timezoneIdentifierCities,
@@ -377,7 +398,8 @@ class BuildValidationRule
                         timezoneGroup: $this->dateTimezoneGroupName
                     )
                 ]
-                : []),
+                : []
+            ),
 
             ...($this->dateBeforeOrEqual !== null
                 ? [DateRule::DATE_BEFORE_OR_EQUAL . $this->dateBeforeOrEqual]

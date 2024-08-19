@@ -5,6 +5,7 @@ namespace Shergela\Validations\Rules;
 use Closure;
 use DateTimeZone;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Str;
 
 class TimezoneRegionValidation implements ValidationRule
 {
@@ -14,9 +15,9 @@ class TimezoneRegionValidation implements ValidationRule
      * @param array<string> $cities
      */
     public function __construct(
-        protected array $cities,
-        protected int $timezoneGroupNumber,
-        protected string $timezoneGroup,
+        protected readonly array $cities,
+        protected readonly int $timezoneGroupNumber,
+        protected readonly string $timezoneGroup,
     ) {
     }
 
@@ -35,24 +36,18 @@ class TimezoneRegionValidation implements ValidationRule
 
         $search = $this->timezoneGroup . '/' . $toString;
 
-        $timezonesList = $this->getTimezoneLists();
-
         /**
-         * Validate cities if is valid for time zone regions.
+         * Validate provided cities
          */
-        if ($this->validateCities() === false) {
+        if ($this->validateProvidedValues() === false) {
             $fail($this->message);
             return;
         };
 
-        $timezonesList = collect($timezonesList)->map(function ($value) {
-            return strtolower($value);
-        })->toArray();
-
-        if (! in_array($search, $timezonesList)) {
+        if (! in_array($search, $this->getTimezoneLists())) {
             $fail(
                 sprintf(
-                    "The city name [:attribute] (%s) is not in the valid timezone for (%s) list.",
+                    "The city name [input: :attribute] (%s) is not in the valid timezone for (%s) list.",
                     ucfirst($toString),
                     ucfirst($this->timezoneGroup)
                 )
@@ -63,13 +58,14 @@ class TimezoneRegionValidation implements ValidationRule
     /**
      * @return bool
      */
-    private function validateCities(): bool
+    private function validateProvidedValues(): bool
     {
         foreach ($this->cities as $city) {
             if (! in_array($city, $this->getTimezoneLists())) {
+                $after = ucfirst(Str::after($city, '/'));
                 $this->message = sprintf(
                     "This timezone [%s] is not in the valid timezone for [%s].",
-                    ucfirst($city),
+                    ucfirst($this->timezoneGroup . '/' . $after),
                     ucfirst($this->timezoneGroup)
                 );
                 return false;
@@ -83,10 +79,13 @@ class TimezoneRegionValidation implements ValidationRule
      */
     private function getTimezoneLists(): array
     {
-        return collect(DateTimeZone::listIdentifiers($this->timezoneGroupNumber))->map(
+        /** @var array<string> $list */
+        $list = collect(DateTimeZone::listIdentifiers($this->timezoneGroupNumber))->map(
             function ($value) {
                 return strtolower($value);
             }
         )->toArray();
+
+        return $list;
     }
 }

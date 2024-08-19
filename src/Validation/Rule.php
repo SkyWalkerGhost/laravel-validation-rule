@@ -49,6 +49,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     protected array $customMessages = [];
 
     /**
+     * @var array<string>
+     */
+    protected array $customAttributes = [];
+
+    /**
      * Additional validation rules that should be merged into the default rules during validation.
      * @var array<string>
      */
@@ -475,11 +480,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezoneEurope(array $cities): static
+    public function timezoneEurope(array|string $cities): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviationEnum::EUROPE,
@@ -492,11 +500,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezoneAmerica(array $cities): static
+    public function timezoneAmerica(array|string $cities): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviationEnum::AMERICA,
@@ -509,11 +520,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezoneAntarctica(array $cities): static
+    public function timezoneAntarctica(array|string $cities): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviationEnum::ANTARCTICA,
@@ -526,11 +540,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezoneArctic(array $cities): static
+    public function timezoneArctic(array|string $cities): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviationEnum::ARCTIC,
@@ -543,11 +560,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezoneAtlantic(array $cities): static
+    public function timezoneAtlantic(array|string $cities): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviationEnum::ATLANTIC,
@@ -560,11 +580,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezoneAustralia(array $cities): static
+    public function timezoneAustralia(array|string $cities): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviationEnum::AUSTRALIA,
@@ -577,11 +600,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezoneIndian(array $cities): static
+    public function timezoneIndian(array|string $cities): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviationEnum::INDIAN,
@@ -594,11 +620,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezonePacific(array $cities): static
+    public function timezonePacific(array|string $cities): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviationEnum::PACIFIC,
@@ -861,7 +890,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      */
     public function attributes(array $attributes): static
     {
-        $this->validator->customAttributes = $attributes;
+        $this->customAttributes = $attributes;
 
         return $this;
     }
@@ -928,7 +957,8 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $validator = ValidatorFacade::make(
             data: $this->getValidationData(),
             rules: [$attribute => $this->getValidationRules()],
-            messages: $this->validator->customMessages,
+            messages: $this->customMessages,
+            attributes: $this->customAttributes
         )->stopOnFirstFailure();
 
 
