@@ -8,13 +8,13 @@ use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
 use Shergela\Validations\Enums\ValidationRegexEnum as RegexRule;
 use Shergela\Validations\Enums\ValidationRuleEnum as Rule;
 use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
-use Shergela\Validations\Rules\LowercaseFirstLetter;
-use Shergela\Validations\Rules\SeparateIntegersByComma;
-use Shergela\Validations\Rules\SeparateStringsByComma;
-use Shergela\Validations\Rules\SeparateStringsByUnderscore;
-use Shergela\Validations\Rules\TimezoneValidation;
-use Shergela\Validations\Rules\TimezoneRegionValidation;
-use Shergela\Validations\Rules\UppercaseFirstLetter;
+use Shergela\Validations\Rules\LowercaseFirstLetter as LowerFL;
+use Shergela\Validations\Rules\SeparateIntegersByComma as IntegerByComma;
+use Shergela\Validations\Rules\SeparateStringsByComma as StringByComma;
+use Shergela\Validations\Rules\SeparateStringsByUnderscore as StringByUnderscore;
+use Shergela\Validations\Rules\TimezoneRegionValidation as TimezoneRegion;
+use Shergela\Validations\Rules\TimezoneValidation as Timezone;
+use Shergela\Validations\Rules\UppercaseFirstLetter as UpperFL;
 
 class BuildValidationRule
 {
@@ -312,7 +312,7 @@ class BuildValidationRule
     protected static ?string $notIn = null;
 
     /**
-     * @return array<UppercaseFirstLetter|SeparateIntegersByComma|SeparateStringsByComma|SeparateStringsByUnderscore|string>
+     * @return array<int,LowerFL|IntegerByComma|StringByComma|StringByUnderscore|TimezoneRegion|Timezone|UpperFL|string>
      */
     protected function buildValidationRules(): array
     {
@@ -374,8 +374,8 @@ class BuildValidationRule
             ...($this->endsWith !== null ? [$this->endsWith] : []),
             ...($this->doesntStartWith !== null ? [$this->doesntStartWith] : []),
             ...($this->doesntEndWith !== null ? [$this->doesntEndWith] : []),
-            ...($this->uppercaseFirstLetter === true ? [new UppercaseFirstLetter()] : []),
-            ...($this->lowercaseFirstLetter === true ? [new LowercaseFirstLetter()] : []),
+            ...($this->uppercaseFirstLetter === true ? [new UpperFL()] : []),
+            ...($this->lowercaseFirstLetter === true ? [new LowerFL()] : []),
 
             /**
              * --------------------------------------------------------------------------------
@@ -387,12 +387,12 @@ class BuildValidationRule
             ...($this->dateBefore !== null ? [DateRule::DATE_BEFORE . $this->dateBefore] : []),
             ...($this->dateFormat !== null ? [DateRule::DATE_FORMAT . $this->dateFormat] : []),
             ...($this->timezone !== null ? [DateRule::TIMEZONE_ALL] : []),
-            ...($this->timezones !== null ? [new TimezoneValidation(timezones: $this->timezones)] : []),
+            ...($this->timezones !== null ? [new Timezone(timezones: $this->timezones)] : []),
 
             ...(
                 !empty($this->timezoneIdentifierCities)
                 ? [
-                    new TimezoneRegionValidation(
+                    new TimezoneRegion(
                         cities: $this->timezoneIdentifierCities,
                         timezoneGroupNumber: $this->dateTimezoneGroupNumber,
                         timezoneGroup: $this->dateTimezoneGroupName
@@ -416,9 +416,9 @@ class BuildValidationRule
              * Regex validations
              */
             ...($this->regexPattern !== null ? [RegexRule::RULE . $this->regexPattern] : []),
-            ...($this->separateIntegersByComma === true ? [new SeparateIntegersByComma()] : []),
-            ...($this->separateStringsByComma === true ? [new SeparateStringsByComma()] : []),
-            ...($this->separateStringsByUnderscore === true ? [new SeparateStringsByUnderscore()] : []),
+            ...($this->separateIntegersByComma === true ? [new IntegerByComma()] : []),
+            ...($this->separateStringsByComma === true ? [new StringByComma()] : []),
+            ...($this->separateStringsByUnderscore === true ? [new StringByUnderscore()] : []),
         ];
     }
 }

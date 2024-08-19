@@ -15,10 +15,13 @@ use Shergela\Validations\Enums\ValidationDateEnum;
 use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
 use Shergela\Validations\Enums\ValidationRuleEnum as RuleEnum;
 use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
-use Shergela\Validations\Rules\SeparateIntegersByComma;
-use Shergela\Validations\Rules\SeparateStringsByComma;
-use Shergela\Validations\Rules\SeparateStringsByUnderscore;
-use Shergela\Validations\Rules\UppercaseFirstLetter;
+use Shergela\Validations\Rules\LowercaseFirstLetter as LowerFL;
+use Shergela\Validations\Rules\SeparateIntegersByComma as IntegerByComma;
+use Shergela\Validations\Rules\SeparateStringsByComma as StringByComma;
+use Shergela\Validations\Rules\SeparateStringsByUnderscore as StringByUnderscore;
+use Shergela\Validations\Rules\TimezoneRegionValidation as TimezoneRegion;
+use Shergela\Validations\Rules\TimezoneValidation as Timezone;
+use Shergela\Validations\Rules\UppercaseFirstLetter as UpperFL;
 
 class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
 {
@@ -932,7 +935,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @return array<UppercaseFirstLetter|SeparateIntegersByComma|SeparateStringsByComma|SeparateStringsByUnderscore|string>
+     * @return array<int,LowerFL|IntegerByComma|StringByComma|StringByUnderscore|TimezoneRegion|Timezone|UpperFL|string>
      */
     private function getValidationRules(): array
     {
