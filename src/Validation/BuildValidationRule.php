@@ -312,11 +312,12 @@ class BuildValidationRule
     protected static ?string $notIn = null;
 
     /**
-     * @return array<int,LowerFL|IntegerByComma|StringByComma|StringByUnderscore|TimezoneRegion|Timezone|UpperFL|string>
+     * @return array<string>
      */
     protected function buildValidationRules(): array
     {
-        return [
+        /** @var array<string> $rules */
+        $rules = [
             /**
              * --------------------------------------------------------------------------------
              * Default validations
@@ -420,5 +421,7 @@ class BuildValidationRule
             ...($this->separateStringsByComma === true ? [new StringByComma()] : []),
             ...($this->separateStringsByUnderscore === true ? [new StringByUnderscore()] : []),
         ];
+
+        return $rules;
     }
 }

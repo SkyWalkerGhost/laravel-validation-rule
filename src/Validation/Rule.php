@@ -949,15 +949,18 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @return array<int,LowerFL|IntegerByComma|StringByComma|StringByUnderscore|TimezoneRegion|Timezone|UpperFL|string>
+     * @return array<string>
      */
     private function getValidationRules(): array
     {
+        /** @var array<string> $rules */
+        $rules = $this->buildValidationRules();
+
         if (empty($this->customRules)) {
-            return $this->buildValidationRules();
+            return $rules;
         }
 
-        return array_merge($this->customRules, $this->buildValidationRules());
+        return array_merge($this->customRules, $rules);
     }
 
     /**
@@ -989,7 +992,10 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      */
     public function getRules(): array
     {
-        return $this->getValidationRules();
+        /** @var array<string> $rules */
+        $rules = $this->getValidationRules();
+
+        return $rules;
     }
 
     /**
@@ -998,6 +1004,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      */
     public function getRule(int $key = 0): string|null
     {
+        /** @var array<string> $rules */
         $rules = $this->getRules();
 
         /**
