@@ -2,6 +2,12 @@
 
 All notable changes to `shergela/validation-rule` will be documented in this file.
 
+## 1.0.2 | 23 August - 2024
+
+## Modified Rule::in() and Rule::notIn() rules.
+### Add tests.
+
+
 ## 1.0.2 | 19 August - 2024
 
 ## These methods work with timezones

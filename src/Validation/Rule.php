@@ -2,14 +2,17 @@
 
 namespace Shergela\Validations\Validation;
 
+use BackedEnum;
 use Closure;
 use DateTimeZone;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\Validator;
+use Shergela\Validations\DataManipulation\InNotInRuleManipulation;
 use Shergela\Validations\Enums\DatetimeZoneAbbreviationEnum;
 use Shergela\Validations\Enums\ValidationDateEnum;
 use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
@@ -22,6 +25,7 @@ use Shergela\Validations\Rules\SeparateStringsByUnderscore as StringByUnderscore
 use Shergela\Validations\Rules\TimezoneRegionValidation as TimezoneRegion;
 use Shergela\Validations\Rules\TimezoneValidation as Timezone;
 use Shergela\Validations\Rules\UppercaseFirstLetter as UpperFL;
+use UnitEnum;
 
 class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
 {
@@ -909,27 +913,37 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $values
+     * @param Arrayable<int, string>|array<string>|string $values
      * @return Rule
      */
-    public static function in(array $values): Rule
+    public static function in(Arrayable|array|string $values): Rule
     {
-        $implode = implode(',', $values);
+        if ($values instanceof Arrayable) {
+            $values = $values->toArray();
+        }
 
-        static::$in = RuleEnum::IN . $implode;
+        /** @var Arrayable<int, string>|array<string>|string $values */
+        $values = is_array($values) ? $values : func_get_args();
+
+        static::$in = RuleEnum::IN . (new InNotInRuleManipulation(values: $values))->handle();
 
         return new self();
     }
 
     /**
-     * @param array<string> $values
+     * @param Arrayable<int, string>|array<string>|string $values
      * @return Rule
      */
-    public static function notIn(array $values): Rule
+    public static function notIn(Arrayable|array|string $values): Rule
     {
-        $implode = implode(',', $values);
+        if ($values instanceof Arrayable) {
+            $values = $values->toArray();
+        }
 
-        static::$notIn = RuleEnum::NOT_IN . $implode;
+        /** @var Arrayable<int, string>|array<string>|string $values */
+        $values = is_array($values) ? $values : func_get_args();
+
+        static::$notIn = RuleEnum::NOT_IN . (new InNotInRuleManipulation(values: $values))->handle();
 
         return new self();
     }
@@ -968,6 +982,32 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         }
 
         return true;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getRules(): array
+    {
+        return $this->getValidationRules();
+    }
+
+    /**
+     * @param int $key
+     * @return string|null
+     */
+    public function getRule(int $key = 0): string|null
+    {
+        $rules = $this->getRules();
+
+        /**
+         * Get only one element of the array
+         */
+        if (isset($rules[$key])) {
+            return $rules[$key];
+        }
+
+        return null;
     }
 
     /**

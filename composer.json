@@ -8,6 +8,11 @@
             "Shergela\\Validations\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Shergela\\Validations\\": "tests"
+        }
+    },
     "authors": [
         {
             "name": "Avto Shergelashvili",
