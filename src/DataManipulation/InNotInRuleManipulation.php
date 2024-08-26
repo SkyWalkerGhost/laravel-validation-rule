@@ -11,8 +11,11 @@ class InNotInRuleManipulation
     /**
      * @param Arrayable<int, string>|array<string>|string $values
      */
-    public function __construct(protected readonly Arrayable|array|string $values)
-    {
+    public function __construct(
+        protected readonly Arrayable|array|string $values,
+        protected readonly bool $in = false,
+        protected readonly bool $notIn = false,
+    ) {
     }
 
     /**
@@ -21,6 +24,7 @@ class InNotInRuleManipulation
     private function manipulation(): string
     {
         $values = $this->values;
+        $rule = $this->in === true ? 'in:' : 'not_in:';
 
         $values = array_map(function ($value) {
             $value = match (true) {
@@ -35,7 +39,7 @@ class InNotInRuleManipulation
             return '"' . str_replace('"', '""', $v) . '"';
         }, (array) $values);
 
-        return implode(',', $values);
+        return $rule . implode(',', $values);
     }
 
     /**

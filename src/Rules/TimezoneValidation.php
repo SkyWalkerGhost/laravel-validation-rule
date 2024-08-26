@@ -4,13 +4,14 @@ namespace Shergela\Validations\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Str;
 
 class TimezoneValidation implements ValidationRule
 {
     /**
      * @param array<string> $timezones
      */
-    public function __construct(protected readonly array $timezones)
+    public function __construct(protected readonly array $timezones, protected readonly ?string $message = null)
     {
     }
 
@@ -33,10 +34,14 @@ class TimezoneValidation implements ValidationRule
 
         if (! in_array($toString, $timezones)) {
             $implode = implode(', ', $this->timezones);
-            $fail("
-                The [:attribute] value does not match the given timezones list: [{$implode}].
-                Please provide correct timezone.
-            ");
+            if ($this->message !== null) {
+                $fail($this->message);
+            } else {
+                $fail(sprintf("
+                The :attribute value (%s) does not match the given timezones list: [%s].
+                    Please provide correct timezone.
+                ", $toString, $implode));
+            }
         }
     }
 }

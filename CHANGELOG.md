@@ -2,6 +2,11 @@
 
 All notable changes to `shergela/validation-rule` will be documented in this file.
 
+## 1.0.4 | 26 August - 2024
+
+- add new `length()` method.
+- add a custom message support in the methods.
+
 ## 1.0.3 | 23 August - 2024
 
 ## Modified Rule::in() and Rule::notIn() rules.

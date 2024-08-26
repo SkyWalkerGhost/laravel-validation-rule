@@ -18,6 +18,7 @@ class TimezoneRegionValidation implements ValidationRule
         protected readonly array $cities,
         protected readonly int $timezoneGroupNumber,
         protected readonly string $timezoneGroup,
+        protected readonly string|null $customMessage,
     ) {
     }
 
@@ -40,7 +41,7 @@ class TimezoneRegionValidation implements ValidationRule
          * Validate provided cities
          */
         if ($this->validateProvidedValues() === false) {
-            $fail($this->message);
+            $fail($this->customMessage == null ? $this->message : $this->customMessage);
             return;
         };
 

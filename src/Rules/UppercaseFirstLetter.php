@@ -8,6 +8,10 @@ use Illuminate\Support\Str;
 
 class UppercaseFirstLetter implements ValidationRule
 {
+    public function __construct(protected readonly ?string $message = null)
+    {
+    }
+
     /**
      * @param string $attribute
      * @param mixed $value
@@ -24,7 +28,11 @@ class UppercaseFirstLetter implements ValidationRule
         }
 
         if (Str::ucfirst($toString) !== $value) {
-            $fail('The first character of :attribute must be uppercase letter.');
+            $fail(
+                $this->message !== null
+                    ? $this->message
+                    : 'The first character of :attribute must be uppercase letter.'
+            );
         }
     }
 }

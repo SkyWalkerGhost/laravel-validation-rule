@@ -8,6 +8,10 @@ use Illuminate\Support\Str;
 
 class LowercaseFirstLetter implements ValidationRule
 {
+    public function __construct(protected readonly ?string $message = null)
+    {
+    }
+
     /**
      * @param string $attribute
      * @param mixed $value
@@ -24,7 +28,11 @@ class LowercaseFirstLetter implements ValidationRule
         }
 
         if (Str::lcfirst($toString) !== $value) {
-            $fail('The first character of :attribute must be lowercase letter.');
+            $fail(
+                $this->message !== null
+                        ? $this->message
+                        : 'The first character of :attribute must be lowercase letter.'
+            );
         }
     }
 }

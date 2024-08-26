@@ -17,6 +17,6 @@ enum ValidationDateEnum: string
     public const DATE_EQUALS = 'date_equals:';
 
     public const DATE_FORMAT = 'date_format:';
-    public const TIMEZONE = 'timezone:';
+    public const TIMEZONE = 'timezone';
     public const TIMEZONE_ALL = 'timezone:all';
 }

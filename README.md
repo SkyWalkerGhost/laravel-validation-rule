@@ -21,6 +21,7 @@ return [
   	<ol>
         <li><a href="#create-rule">Build rule</a></li>
         <li><a href="#writing-messages">Build Messages</a></li>
+        <li><a href="#writing-custom-message">Writing a custom Messages into method</a></li>
   	</ol>
 </div>
 
@@ -93,6 +94,7 @@ return [
 |      ->timezoneAustralia()      |  new TimezoneRegionValidation()   |
 |       ->timezoneIndian()        |  new TimezoneRegionValidation()   |
 |       ->timezonePacific()       |  new TimezoneRegionValidation()   |
+|           ->length()            |               size                |
 </div>
 
 
@@ -134,6 +136,37 @@ public function authorize(): bool
 ```
 
 </div>
+
+## Writing a custom message in the methods
+<div id="writing-custom-message">
+
+```php
+    
+    namespace App\Http\Requests;
+    
+    use Illuminate\Foundation\Http\FormRequest;
+    use Shergela\Validations\Validation\Rule;
+    
+    class TestRequest extends FormRequest
+    {
+        /**
+        * @return bool
+          */
+          public function authorize(): bool
+          {
+          return true;
+          }
+        
+          public function rules(): array
+          {
+            return [
+                'name' => Rule::required(message: 'Please enter your name')
+                    ->min(min: 3, message: 'Please enter at least 3 characters'),
+            ];
+          }
+      }
+```
+</div> 
 
 
 # License

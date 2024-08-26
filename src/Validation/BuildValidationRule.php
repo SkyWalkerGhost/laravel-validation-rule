@@ -8,13 +8,13 @@ use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
 use Shergela\Validations\Enums\ValidationRegexEnum as RegexRule;
 use Shergela\Validations\Enums\ValidationRuleEnum as Rule;
 use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
-use Shergela\Validations\Rules\LowercaseFirstLetter as LowerFL;
+use Shergela\Validations\Rules\LowercaseFirstLetter;
 use Shergela\Validations\Rules\SeparateIntegersByComma as IntegerByComma;
 use Shergela\Validations\Rules\SeparateStringsByComma as StringByComma;
 use Shergela\Validations\Rules\SeparateStringsByUnderscore as StringByUnderscore;
-use Shergela\Validations\Rules\TimezoneRegionValidation as TimezoneRegion;
-use Shergela\Validations\Rules\TimezoneValidation as Timezone;
-use Shergela\Validations\Rules\UppercaseFirstLetter as UpperFL;
+use Shergela\Validations\Rules\TimezoneRegionValidation;
+use Shergela\Validations\Rules\TimezoneValidation;
+use Shergela\Validations\Rules\UppercaseFirstLetter;
 
 class BuildValidationRule
 {
@@ -32,6 +32,12 @@ class BuildValidationRule
      * @var bool
      */
     protected static bool $boolean = false;
+
+    /**
+     * @var string|null
+     * Set custom message
+     */
+    protected static ?string $customMessage = null;
 
     /**
      * @var int|null
@@ -375,8 +381,18 @@ class BuildValidationRule
             ...($this->endsWith !== null ? [$this->endsWith] : []),
             ...($this->doesntStartWith !== null ? [$this->doesntStartWith] : []),
             ...($this->doesntEndWith !== null ? [$this->doesntEndWith] : []),
-            ...($this->uppercaseFirstLetter === true ? [new UpperFL()] : []),
-            ...($this->lowercaseFirstLetter === true ? [new LowerFL()] : []),
+
+            ...(
+                $this->uppercaseFirstLetter === true
+                    ? [new UppercaseFirstLetter(message: static::$customMessage)]
+                    : []
+            ),
+
+            ...(
+                $this->lowercaseFirstLetter === true
+                    ? [new LowercaseFirstLetter(message: static::$customMessage)]
+                    : []
+            ),
 
             /**
              * --------------------------------------------------------------------------------
@@ -388,15 +404,21 @@ class BuildValidationRule
             ...($this->dateBefore !== null ? [DateRule::DATE_BEFORE . $this->dateBefore] : []),
             ...($this->dateFormat !== null ? [DateRule::DATE_FORMAT . $this->dateFormat] : []),
             ...($this->timezone !== null ? [DateRule::TIMEZONE_ALL] : []),
-            ...($this->timezones !== null ? [new Timezone(timezones: $this->timezones)] : []),
+
+            ...(
+                $this->timezones !== null
+                    ? [new TimezoneValidation(timezones: $this->timezones, message: static::$customMessage)]
+                    : []
+            ),
 
             ...(
                 !empty($this->timezoneIdentifierCities)
                 ? [
-                    new TimezoneRegion(
+                    new TimezoneRegionValidation(
                         cities: $this->timezoneIdentifierCities,
                         timezoneGroupNumber: $this->dateTimezoneGroupNumber,
-                        timezoneGroup: $this->dateTimezoneGroupName
+                        timezoneGroup: $this->dateTimezoneGroupName,
+                        customMessage: static::$customMessage,
                     )
                 ]
                 : []
@@ -417,9 +439,14 @@ class BuildValidationRule
              * Regex validations
              */
             ...($this->regexPattern !== null ? [RegexRule::RULE . $this->regexPattern] : []),
-            ...($this->separateIntegersByComma === true ? [new IntegerByComma()] : []),
-            ...($this->separateStringsByComma === true ? [new StringByComma()] : []),
-            ...($this->separateStringsByUnderscore === true ? [new StringByUnderscore()] : []),
+            ...($this->separateIntegersByComma === true ? [new IntegerByComma(message: static::$customMessage)] : []),
+            ...($this->separateStringsByComma === true ? [new StringByComma(message: static::$customMessage)] : []),
+
+            ...(
+                $this->separateStringsByUnderscore === true
+                    ? [new StringByUnderscore(message: static::$customMessage)]
+                    : []
+            ),
         ];
 
         return $rules;

@@ -8,6 +8,10 @@ use Shergela\Validations\Enums\ValidationRegexEnum as Regex;
 
 class SeparateIntegersByComma implements ValidationRule
 {
+    public function __construct(protected readonly ?string $message = null)
+    {
+    }
+
     /**
      * @param string $attribute
      * @param mixed $value
@@ -20,7 +24,11 @@ class SeparateIntegersByComma implements ValidationRule
         $toString = $value;
 
         if (! preg_match(pattern: Regex::SEPARATE_INTEGERS_BY_COMMA, subject: $toString)) {
-            $fail("Please separate (:attribute) integer values by comma. Entered value: {$toString}");
+            $fail(
+                $this->message == null
+                    ? "Please separate (:attribute) integer values by comma. Entered value: {$toString}"
+                    : $this->message
+            );
         }
     }
 }

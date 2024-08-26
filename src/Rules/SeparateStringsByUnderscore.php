@@ -8,6 +8,10 @@ use Shergela\Validations\Enums\ValidationRegexEnum as Regex;
 
 class SeparateStringsByUnderscore implements ValidationRule
 {
+    public function __construct(protected readonly ?string $message = null)
+    {
+    }
+
     /**
      * @param string $attribute
      * @param mixed $value
@@ -20,7 +24,11 @@ class SeparateStringsByUnderscore implements ValidationRule
         $toString = $value;
 
         if (! preg_match(pattern: Regex::SEPARATE_STRINGS_BY_UNDERSCORE, subject: $toString)) {
-            $fail("Please separate (:attribute) values by underscore. Entered value: {$toString}");
+            $fail(
+                $this->message == null
+                    ? "Please separate (:attribute) values by underscore. Entered value: {$toString}"
+                    : $this->message
+            );
         }
     }
 }
