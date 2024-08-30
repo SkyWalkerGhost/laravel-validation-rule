@@ -46,13 +46,17 @@ class TimezoneRegionValidation implements ValidationRule
         };
 
         if (! in_array($search, $this->getTimezoneLists())) {
-            $fail(
-                sprintf(
-                    "The city name [input: :attribute] (%s) is not in the valid timezone for (%s) list.",
-                    ucfirst($toString),
-                    ucfirst($this->timezoneGroup)
-                )
-            );
+            if ($this->customMessage !== null) {
+                $fail($this->customMessage);
+            } else {
+                $fail(
+                    sprintf(
+                        "The city name [:attribute] (%s) is not in the valid timezone for (%s) list.",
+                        ucfirst($toString),
+                        ucfirst($this->timezoneGroup)
+                    )
+                );
+            }
         }
     }
 

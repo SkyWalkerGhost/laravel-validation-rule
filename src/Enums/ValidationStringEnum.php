@@ -18,6 +18,8 @@ enum ValidationStringEnum: string
      */
     public const ALPHA = 'alpha';
 
+    public const ASCII = 'ascii';
+
     /**
      * The field under validation must be entirely Unicode alphanumeric characters contained in \p{L}, \p{M}, \p{N},
      * as well as ASCII dashes (-) and ASCII underscores (_).

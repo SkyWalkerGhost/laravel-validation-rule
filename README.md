@@ -94,7 +94,10 @@ return [
 |      ->timezoneAustralia()      |  new TimezoneRegionValidation()   |
 |       ->timezoneIndian()        |  new TimezoneRegionValidation()   |
 |       ->timezonePacific()       |  new TimezoneRegionValidation()   |
-|           ->length()            |               size                |
+|            ->array()            |               array               |
+|        ->arrayDistinct()        |             distinct              |
+|     ->arrayDistinctStrict()     |          distinct:strict          |
+|   ->arrayDistinctIgnoreCase()   |       distinct:ignore_case        |
 </div>
 
 

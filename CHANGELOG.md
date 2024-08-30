@@ -2,6 +2,13 @@
 
 All notable changes to `shergela/validation-rule` will be documented in this file.
 
+## 1.0.5 | 30 August - 2024
+
+- add new `array()` method.
+- add new `arrayDistinct()` method.
+- add new `arrayDistinctStrict()` method.
+- add new `arrayDistinctIgnoreCase()` method.
+
 ## 1.0.4 | 26 August - 2024
 
 - add new `length()` method.

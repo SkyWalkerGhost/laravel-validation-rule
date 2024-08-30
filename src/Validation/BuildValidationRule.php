@@ -12,6 +12,7 @@ use Shergela\Validations\Rules\LowercaseFirstLetter;
 use Shergela\Validations\Rules\SeparateIntegersByComma as IntegerByComma;
 use Shergela\Validations\Rules\SeparateStringsByComma as StringByComma;
 use Shergela\Validations\Rules\SeparateStringsByUnderscore as StringByUnderscore;
+use Shergela\Validations\Enums\ValidationArrayEnum as ArrayEnum;
 use Shergela\Validations\Rules\TimezoneRegionValidation;
 use Shergela\Validations\Rules\TimezoneValidation;
 use Shergela\Validations\Rules\UppercaseFirstLetter;
@@ -37,7 +38,7 @@ class BuildValidationRule
      * @var string|null
      * Set custom message
      */
-    protected static ?string $customMessage = null;
+    protected static ?string $validationMessage = null;
 
     /**
      * @var int|null
@@ -318,6 +319,26 @@ class BuildValidationRule
     protected static ?string $notIn = null;
 
     /**
+     * @var bool
+     */
+    protected bool $array = false;
+
+    /**
+     * @var bool
+     */
+    protected bool $arrayDistinct = false;
+
+    /**
+     * @var bool
+     */
+    protected ?bool $distinctStinct = false;
+
+    /**
+     * @var bool
+     */
+    protected bool $distinctIgnoreCase = false;
+
+    /**
      * @return array<string>
      */
     protected function buildValidationRules(): array
@@ -384,13 +405,13 @@ class BuildValidationRule
 
             ...(
                 $this->uppercaseFirstLetter === true
-                    ? [new UppercaseFirstLetter(message: static::$customMessage)]
+                    ? [new UppercaseFirstLetter(message: static::$validationMessage)]
                     : []
             ),
 
             ...(
                 $this->lowercaseFirstLetter === true
-                    ? [new LowercaseFirstLetter(message: static::$customMessage)]
+                    ? [new LowercaseFirstLetter(message: static::$validationMessage)]
                     : []
             ),
 
@@ -407,7 +428,7 @@ class BuildValidationRule
 
             ...(
                 $this->timezones !== null
-                    ? [new TimezoneValidation(timezones: $this->timezones, message: static::$customMessage)]
+                    ? [new TimezoneValidation(timezones: $this->timezones, message: static::$validationMessage)]
                     : []
             ),
 
@@ -418,7 +439,7 @@ class BuildValidationRule
                         cities: $this->timezoneIdentifierCities,
                         timezoneGroupNumber: $this->dateTimezoneGroupNumber,
                         timezoneGroup: $this->dateTimezoneGroupName,
-                        customMessage: static::$customMessage,
+                        customMessage: static::$validationMessage,
                     )
                 ]
                 : []
@@ -439,14 +460,22 @@ class BuildValidationRule
              * Regex validations
              */
             ...($this->regexPattern !== null ? [RegexRule::RULE . $this->regexPattern] : []),
-            ...($this->separateIntegersByComma === true ? [new IntegerByComma(message: static::$customMessage)] : []),
-            ...($this->separateStringsByComma === true ? [new StringByComma(message: static::$customMessage)] : []),
+            ...($this->separateIntegersByComma === true ? [new IntegerByComma(message: static::$validationMessage)] : []),
+            ...($this->separateStringsByComma === true ? [new StringByComma(message: static::$validationMessage)] : []),
 
             ...(
                 $this->separateStringsByUnderscore === true
-                    ? [new StringByUnderscore(message: static::$customMessage)]
+                    ? [new StringByUnderscore(message: static::$validationMessage)]
                     : []
             ),
+
+            /**
+             * Array validations
+             */
+            ...($this->array === true ? [ArrayEnum::ARRAY] : []),
+            ...($this->arrayDistinct === true ? [ArrayEnum::DISTINCT] : []),
+            ...($this->distinctStinct === true ? [ArrayEnum::DISTINCT_STRICT] : []),
+            ...($this->distinctIgnoreCase === true ? [ArrayEnum::DISTINCT_IGNORE_CASE] : []),
         ];
 
         return $rules;
