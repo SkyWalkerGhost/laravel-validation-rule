@@ -5,6 +5,7 @@ namespace Shergela\Validations\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
+use Shergela\Validations\Constants\ValidationRegex;
 
 class LowercaseWord implements ValidationRule
 {
@@ -27,6 +28,11 @@ class LowercaseWord implements ValidationRule
         $pregSplit = preg_split("/\s+/", $toString);
 
         $count = count($pregSplit);
+
+        if (! preg_match(ValidationRegex::LETTERS_ONLY, $toString)) {
+            $fail("The :attribute ($toString) must be a alphabetic word.");
+            return;
+        }
 
         if ($count > 1) {
             $fail("The :attribute ($toString) must be one lowercase word. ($count) words given.");

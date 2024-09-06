@@ -12,7 +12,7 @@ class ValidationRegex
     /**
      * Only letters
      */
-    public const LETTERS = 'regex:/\pL/u';
+    public const LETTERS_ONLY = '/^\p{L}+$/u';
 
     /**
      * Letters and spaces
