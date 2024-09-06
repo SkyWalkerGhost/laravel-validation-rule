@@ -1,8 +1,8 @@
 <?php
 
-namespace Shergela\Validations\Enums;
+namespace Shergela\Validations\Constants;
 
-enum ValidationRegexEnum: string
+class ValidationRegex
 {
     /**
      * Regex rule
@@ -17,7 +17,7 @@ enum ValidationRegexEnum: string
     /**
      * Letters and spaces
      */
-    public const LETTERS_AND_SPACES = 'regex:/^[\pL\s]+$/u';
+    public const ONLY_LETTERS_AND_SPACES = '/^[\pL\s]+$/u';
 
     /**
      * Symbols

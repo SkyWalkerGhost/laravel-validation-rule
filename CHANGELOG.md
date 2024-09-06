@@ -2,6 +2,12 @@
 
 All notable changes to `shergela/validation-rule` will be documented in this file.
 
+## 1.0.6 | 06 September - 2024
+
+- add new `uppercaseWord()` method.
+- add new `lowercaseWord()` method.
+- add new `lettersAndSpaces()` method.
+
 ## 1.0.5 | 30 August - 2024
 
 - add new `array()` method.

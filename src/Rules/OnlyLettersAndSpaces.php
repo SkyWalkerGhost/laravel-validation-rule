@@ -4,9 +4,9 @@ namespace Shergela\Validations\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Shergela\Validations\Constants\ValidationRegex as Regex;
+use Shergela\Validations\Constants\ValidationRegex;
 
-class SeparateStringsByComma implements ValidationRule
+class OnlyLettersAndSpaces implements ValidationRule
 {
     public function __construct(protected readonly ?string $message = null)
     {
@@ -23,12 +23,12 @@ class SeparateStringsByComma implements ValidationRule
         /** @var string $toString */
         $toString = $value;
 
-        if (! preg_match(pattern: Regex::SEPARATE_STRINGS_BY_COMMA, subject: $toString)) {
-            $fail(
-                $this->message == null
-                    ? "Please separate (:attribute) values by comma. Entered value: {$toString}"
-                    : $this->message
-            );
+        $message = $this->message === null
+            ? "The :attribute ($toString) must contain only letters and spaces."
+            : $this->message;
+
+        if (! preg_match(ValidationRegex::ONLY_LETTERS_AND_SPACES, $toString)) {
+            $fail($message);
         }
     }
 }

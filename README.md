@@ -98,6 +98,9 @@ return [
 |        ->arrayDistinct()        |             distinct              |
 |     ->arrayDistinctStrict()     |          distinct:strict          |
 |   ->arrayDistinctIgnoreCase()   |       distinct:ignore_case        |
+|        ->uppercaseWord()        |     Word must be a uppercase      |
+|        ->lowercaseWord()        |     Word must be a lowercase      |
+|      ->lettersAndSpaces()       |      Letters and spaces only      |
 </div>
 
 

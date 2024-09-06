@@ -1,8 +1,8 @@
 <?php
 
-namespace Shergela\Validations\Enums;
+namespace Shergela\Validations\Constants;
 
-enum DatetimeZoneAbbreviationEnum: string
+class DatetimeZoneAbbreviation
 {
     public const AFRICA = 'Africa';
     public const AMERICA = 'America';

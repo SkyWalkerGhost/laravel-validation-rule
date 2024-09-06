@@ -1,8 +1,8 @@
 <?php
 
-namespace Shergela\Validations\Enums;
+namespace Shergela\Validations\Constants;
 
-enum IPMacValidationEnum: string
+class IPMacValidation
 {
     /**
      * The field under validation must be an IP address.

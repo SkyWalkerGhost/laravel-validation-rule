@@ -2,20 +2,24 @@
 
 namespace Shergela\Validations\Validation;
 
-use Shergela\Validations\Enums\IPMacValidationEnum as IPMACRule;
-use Shergela\Validations\Enums\ValidationDateEnum as DateRule;
-use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
-use Shergela\Validations\Enums\ValidationRegexEnum as RegexRule;
-use Shergela\Validations\Enums\ValidationRuleEnum as Rule;
-use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
+use Shergela\Validations\Constants\IPMacValidation as IPMACRule;
+use Shergela\Validations\Constants\ValidationDate as DateRule;
+use Shergela\Validations\Constants\ValidationInteger as IntegerRule;
+use Shergela\Validations\Constants\ValidationRegex as RegexRule;
+use Shergela\Validations\Constants\ValidationRule as ShergelaRule;
+use Shergela\Validations\Constants\ValidationString as StringRule;
 use Shergela\Validations\Rules\LowercaseFirstLetter;
+use Shergela\Validations\Rules\LowercaseWord;
+use Shergela\Validations\Rules\OnlyLettersAndSpaces;
 use Shergela\Validations\Rules\SeparateIntegersByComma as IntegerByComma;
 use Shergela\Validations\Rules\SeparateStringsByComma as StringByComma;
 use Shergela\Validations\Rules\SeparateStringsByUnderscore as StringByUnderscore;
-use Shergela\Validations\Enums\ValidationArrayEnum as ArrayEnum;
+use Shergela\Validations\Constants\ValidationArray as ArrayRule;
 use Shergela\Validations\Rules\TimezoneRegionValidation;
 use Shergela\Validations\Rules\TimezoneValidation;
 use Shergela\Validations\Rules\UppercaseFirstLetter;
+use Shergela\Validations\Rules\UppercaseWord;
+use Shergela\Validations\Rules\UppercaseWords;
 
 class BuildValidationRule
 {
@@ -221,6 +225,10 @@ class BuildValidationRule
     protected bool $uppercaseFirstLetter = false;
     protected bool $lowercaseFirstLetter = false;
 
+    protected bool $uppercaseWord = false;
+    protected bool $lowerCaseWord = false;
+    protected bool $onlyLettersAndSpaces = false;
+
     /**
      * @var string|null
      */
@@ -350,19 +358,21 @@ class BuildValidationRule
              * Default validations
              * --------------------------------------------------------------------------------
              */
-            ...(static::$required === true ? [Rule::REQUIRED] : []),
-            ...(static::$nullable === true ? [Rule::NULLABLE] : []),
-            ...(static::$boolean === true ? [Rule::BOOLEAN] : []),
+            ...(static::$required === true ? [ShergelaRule::REQUIRED] : []),
+            ...(static::$nullable === true ? [ShergelaRule::NULLABLE] : []),
+            ...(static::$boolean === true ? [ShergelaRule::BOOLEAN] : []),
             ...(static::$in !== null ? [static::$in] : []),
             ...(static::$notIn !== null ? [static::$notIn] : []),
-            ...($this->email === true ? [Rule::EMAIL] : []),
+            ...($this->email === true ? [ShergelaRule::EMAIL] : []),
             ...($this->uniqueEmail !== null ? [$this->uniqueEmail] : []),
-            ...($this->hexColor === true ? [Rule::HEX_COLOR] : []),
-            ...($this->uuid === true ? [Rule::UUID] : []),
-            ...($this->ulid === true ? [Rule::ULID] : []),
+            ...($this->hexColor === true ? [ShergelaRule::HEX_COLOR] : []),
+            ...($this->uuid === true ? [ShergelaRule::UUID] : []),
+            ...($this->ulid === true ? [ShergelaRule::ULID] : []),
 
             /**
-             * IP | MAC address validations
+             * --------------------------------------------------------------------------------
+             * IP Mac Address validation
+             *--------------------------------------------------------------------------------
              */
             ...($this->ip === true ? [IPMACRule::IP] : []),
             ...($this->ipv4 === true ? [IPMACRule::IPV4] : []),
@@ -415,6 +425,15 @@ class BuildValidationRule
                     : []
             ),
 
+            ...($this->uppercaseWord === true ? [new UppercaseWord(message: static::$validationMessage)] : []),
+            ...($this->lowerCaseWord === true ? [new LowercaseWord(message: static::$validationMessage)] : []),
+
+            ...(
+                $this->onlyLettersAndSpaces === true
+                    ? [new OnlyLettersAndSpaces(message: static::$validationMessage)]
+                    : []
+            ),
+
             /**
              * --------------------------------------------------------------------------------
              * Date Validations
@@ -457,11 +476,23 @@ class BuildValidationRule
             ),
 
             /**
-             * Regex validations
+             * --------------------------------------------------------------------------------
+             * Regex Validations
+             *--------------------------------------------------------------------------------
              */
             ...($this->regexPattern !== null ? [RegexRule::RULE . $this->regexPattern] : []),
-            ...($this->separateIntegersByComma === true ? [new IntegerByComma(message: static::$validationMessage)] : []),
-            ...($this->separateStringsByComma === true ? [new StringByComma(message: static::$validationMessage)] : []),
+
+            ...(
+                $this->separateIntegersByComma === true
+                    ? [new IntegerByComma(message: static::$validationMessage)]
+                    : []
+            ),
+
+            ...(
+                $this->separateStringsByComma === true
+                    ? [new StringByComma(message: static::$validationMessage)]
+                    : []
+            ),
 
             ...(
                 $this->separateStringsByUnderscore === true
@@ -470,12 +501,14 @@ class BuildValidationRule
             ),
 
             /**
-             * Array validations
+             * --------------------------------------------------------------------------------
+             * Array Validations
+             *--------------------------------------------------------------------------------
              */
-            ...($this->array === true ? [ArrayEnum::ARRAY] : []),
-            ...($this->arrayDistinct === true ? [ArrayEnum::DISTINCT] : []),
-            ...($this->distinctStinct === true ? [ArrayEnum::DISTINCT_STRICT] : []),
-            ...($this->distinctIgnoreCase === true ? [ArrayEnum::DISTINCT_IGNORE_CASE] : []),
+            ...($this->array === true ? [ArrayRule::ARRAY] : []),
+            ...($this->arrayDistinct === true ? [ArrayRule::DISTINCT] : []),
+            ...($this->distinctStinct === true ? [ArrayRule::DISTINCT_STRICT] : []),
+            ...($this->distinctIgnoreCase === true ? [ArrayRule::DISTINCT_IGNORE_CASE] : []),
         ];
 
         return $rules;

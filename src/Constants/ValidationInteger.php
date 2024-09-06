@@ -1,8 +1,8 @@
 <?php
 
-namespace Shergela\Validations\Enums;
+namespace Shergela\Validations\Constants;
 
-enum ValidationIntegerEnum: string
+class ValidationInteger
 {
     /**
      * Input value should be an integer

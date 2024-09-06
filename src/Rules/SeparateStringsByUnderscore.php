@@ -4,7 +4,7 @@ namespace Shergela\Validations\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Shergela\Validations\Enums\ValidationRegexEnum as Regex;
+use Shergela\Validations\Constants\ValidationRegex as Regex;
 
 class SeparateStringsByUnderscore implements ValidationRule
 {

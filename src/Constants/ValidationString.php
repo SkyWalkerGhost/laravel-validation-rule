@@ -1,8 +1,8 @@
 <?php
 
-namespace Shergela\Validations\Enums;
+namespace Shergela\Validations\Constants;
 
-enum ValidationStringEnum: string
+class ValidationString
 {
     /**
      * Input value should be a string

@@ -1,8 +1,8 @@
 <?php
 
-namespace Shergela\Validations\Enums;
+namespace Shergela\Validations\Constants;
 
-enum ValidationRuleEnum: string
+class ValidationRule
 {
     /**
      * Value is required

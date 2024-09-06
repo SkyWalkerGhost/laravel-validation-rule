@@ -1,8 +1,8 @@
 <?php
 
-namespace Shergela\Validations\Enums;
+namespace Shergela\Validations\Constants;
 
-enum ValidationArrayEnum: string
+class ValidationArray
 {
     /**
      * Input value must be a date.

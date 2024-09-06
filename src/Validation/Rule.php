@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Shergela\Validations\DataManipulation\InNotInRuleManipulation;
-use Shergela\Validations\Enums\DatetimeZoneAbbreviationEnum;
-use Shergela\Validations\Enums\IPMacValidationEnum;
-use Shergela\Validations\Enums\ValidationArrayEnum as ArrayEnum;
-use Shergela\Validations\Enums\ValidationDateEnum;
-use Shergela\Validations\Enums\ValidationDateEnum as DateRule;
-use Shergela\Validations\Enums\ValidationIntegerEnum as IntegerRule;
-use Shergela\Validations\Enums\ValidationRuleEnum as RuleEnum;
-use Shergela\Validations\Enums\ValidationStringEnum as StringRule;
+use Shergela\Validations\Constants\DatetimeZoneAbbreviation;
+use Shergela\Validations\Constants\IPMacValidation;
+use Shergela\Validations\Constants\ValidationArray as ArrayEnum;
+use Shergela\Validations\Constants\ValidationDate;
+use Shergela\Validations\Constants\ValidationDate as DateRule;
+use Shergela\Validations\Constants\ValidationInteger as IntegerRule;
+use Shergela\Validations\Constants\ValidationRule as RuleEnum;
+use Shergela\Validations\Constants\ValidationString as StringRule;
 
 class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
 {
@@ -49,7 +49,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     protected static array $customMessages = [];
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected static array $customValidationMessages = [];
 
@@ -294,7 +294,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
             static::$customMessages[StringRule::ALPHA_NUM] = $message;
         }
 
-        if ($ascii !== null) {
+        if ($ascii === true) {
             $this->alphaNum = StringRule::ALPHA_NUM . ':' . StringRule::ASCII;
 
             return $this;
@@ -564,15 +564,15 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     public function timezone(string $timezone = null, string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages[ValidationDateEnum::TIMEZONE] = $message;
+            static::$customMessages[ValidationDate::TIMEZONE] = $message;
         }
 
         if ($timezone !== null) {
-            $this->timezone = ValidationDateEnum::TIMEZONE . ':' . $timezone;
+            $this->timezone = ValidationDate::TIMEZONE . ':' . $timezone;
             return $this;
         }
 
-        $this->timezone = ValidationDateEnum::TIMEZONE_ALL;
+        $this->timezone = ValidationDate::TIMEZONE_ALL;
 
         return $this;
     }
@@ -600,11 +600,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     {
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::AFRICA,
+            timezone: DatetimeZoneAbbreviation::AFRICA,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::AFRICA;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::AFRICA);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::AFRICA);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -622,11 +622,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     {
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::ASIA,
+            timezone: DatetimeZoneAbbreviation::ASIA,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::ASIA;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::ASIA);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::ASIA);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -647,11 +647,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::EUROPE,
+            timezone: DatetimeZoneAbbreviation::EUROPE,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::EUROPE;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::EUROPE);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::EUROPE);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -672,11 +672,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::AMERICA,
+            timezone: DatetimeZoneAbbreviation::AMERICA,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::AMERICA;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::AMERICA);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::AMERICA);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -697,11 +697,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::ANTARCTICA,
+            timezone: DatetimeZoneAbbreviation::ANTARCTICA,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::ANTARCTICA;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::ANTARCTICA);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::ANTARCTICA);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -722,11 +722,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::ARCTIC,
+            timezone: DatetimeZoneAbbreviation::ARCTIC,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::ARCTIC;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::ARCTIC);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::ARCTIC);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -747,11 +747,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::ATLANTIC,
+            timezone: DatetimeZoneAbbreviation::ATLANTIC,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::ATLANTIC;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::ATLANTIC);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::ATLANTIC);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -772,11 +772,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::AUSTRALIA,
+            timezone: DatetimeZoneAbbreviation::AUSTRALIA,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::AUSTRALIA;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::AUSTRALIA);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::AUSTRALIA);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -797,11 +797,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::INDIAN,
+            timezone: DatetimeZoneAbbreviation::INDIAN,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::INDIAN;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::INDIAN);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::INDIAN);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -822,11 +822,11 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
-            timezone: DatetimeZoneAbbreviationEnum::PACIFIC,
+            timezone: DatetimeZoneAbbreviation::PACIFIC,
         );
 
         $this->dateTimezoneGroupNumber = DateTimeZone::PACIFIC;
-        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviationEnum::PACIFIC);
+        $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::PACIFIC);
 
         if ($message !== null) {
             static::$validationMessage = $message;
@@ -912,6 +912,51 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         if ($message !== null) {
             static::$customMessages[StringRule::LOWERCASE] = $message;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $message
+     * @return $this
+     */
+    public function uppercaseWord(string $message = null): static
+    {
+        $this->uppercaseWord = true;
+
+        if ($message !== null) {
+            static::$validationMessage = $message;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $message
+     * @return $this
+     */
+    public function lowercaseWord(string $message = null): static
+    {
+        $this->lowerCaseWord = true;
+
+        if ($message !== null) {
+            static::$validationMessage = $message;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $message
+     * @return $this
+     */
+    public function lettersAndSpaces(string $message = null): static
+    {
+        $this->onlyLettersAndSpaces = true;
+
+        if ($message !== null) {
+            static::$validationMessage = $message;
         }
 
         return $this;
@@ -1070,7 +1115,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->ip = true;
 
         if ($message !== null) {
-            static::$customMessages[IPMacValidationEnum::IP] = $message;
+            static::$customMessages[IPMacValidation::IP] = $message;
         }
 
         return $this;
@@ -1085,7 +1130,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->ipv4 = true;
 
         if ($message !== null) {
-            static::$customMessages[IPMacValidationEnum::IPV4] = $message;
+            static::$customMessages[IPMacValidation::IPV4] = $message;
         }
 
         return $this;
@@ -1098,7 +1143,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     public function ipv6(string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages[IPMacValidationEnum::IPV6] = $message;
+            static::$customMessages[IPMacValidation::IPV6] = $message;
         }
 
         return $this;
@@ -1114,7 +1159,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->macAddress = true;
 
         if ($message !== null) {
-            static::$customMessages[IPMacValidationEnum::MAC_ADDRESS] = $message;
+            static::$customMessages[IPMacValidation::MAC_ADDRESS] = $message;
         }
         return $this;
     }
