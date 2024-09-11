@@ -43,19 +43,16 @@ class TimezoneRegionValidation implements ValidationRule
         if ($this->validateProvidedValues() === false) {
             $fail($this->customMessage == null ? $this->message : $this->customMessage);
             return;
-        };
+        }
 
-        if (! in_array($search, $this->getTimezoneLists())) {
+        /**
+         * Check if expected values match given values.
+         */
+        if (! in_array($search, $this->cities)) {
             if ($this->customMessage !== null) {
                 $fail($this->customMessage);
             } else {
-                $fail(
-                    sprintf(
-                        "The city name [:attribute] (%s) is not in the valid timezone for (%s) list.",
-                        ucfirst($toString),
-                        ucfirst($this->timezoneGroup)
-                    )
-                );
+                $fail(sprintf("The city name [:attribute] (%s) is not selected correctly.", ucfirst($toString)));
             }
         }
     }
@@ -69,7 +66,7 @@ class TimezoneRegionValidation implements ValidationRule
             if (! in_array($city, $this->getTimezoneLists())) {
                 $after = ucfirst(Str::after($city, '/'));
                 $this->message = sprintf(
-                    "This timezone [%s] is not in the valid timezone for [%s].",
+                    "This timezone (:attribute) [%s] is not in the valid timezone for %s.",
                     ucfirst($this->timezoneGroup . '/' . $after),
                     ucfirst($this->timezoneGroup)
                 );

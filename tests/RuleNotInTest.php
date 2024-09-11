@@ -3,7 +3,7 @@
 namespace Shergela\Validations;
 
 
-use App\Enums\TestEnum;
+use Shergela\Validations\Enums\TestEnum;
 use Shergela\Validations\Validation\Rule;
 use Tests\TestCase;
 

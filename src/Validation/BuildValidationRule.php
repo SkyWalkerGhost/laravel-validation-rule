@@ -19,7 +19,6 @@ use Shergela\Validations\Rules\TimezoneRegionValidation;
 use Shergela\Validations\Rules\TimezoneValidation;
 use Shergela\Validations\Rules\UppercaseFirstLetter;
 use Shergela\Validations\Rules\UppercaseWord;
-use Shergela\Validations\Rules\UppercaseWords;
 
 class BuildValidationRule
 {
@@ -42,7 +41,8 @@ class BuildValidationRule
      * @var string|null
      * Set custom message
      */
-    protected static ?string $validationMessage = null;
+    protected ?string $validationMessage = null;
+    protected ?string $timezoneValidationMessage = null;
 
     /**
      * @var int|null
@@ -415,22 +415,22 @@ class BuildValidationRule
 
             ...(
                 $this->uppercaseFirstLetter === true
-                    ? [new UppercaseFirstLetter(message: static::$validationMessage)]
+                    ? [new UppercaseFirstLetter(message: $this->validationMessage)]
                     : []
             ),
 
             ...(
                 $this->lowercaseFirstLetter === true
-                    ? [new LowercaseFirstLetter(message: static::$validationMessage)]
+                    ? [new LowercaseFirstLetter(message: $this->validationMessage)]
                     : []
             ),
 
-            ...($this->uppercaseWord === true ? [new UppercaseWord(message: static::$validationMessage)] : []),
-            ...($this->lowerCaseWord === true ? [new LowercaseWord(message: static::$validationMessage)] : []),
+            ...($this->uppercaseWord === true ? [new UppercaseWord(message: $this->validationMessage)] : []),
+            ...($this->lowerCaseWord === true ? [new LowercaseWord(message: $this->validationMessage)] : []),
 
             ...(
                 $this->onlyLettersAndSpaces === true
-                    ? [new OnlyLettersAndSpaces(message: static::$validationMessage)]
+                    ? [new OnlyLettersAndSpaces(message: $this->validationMessage)]
                     : []
             ),
 
@@ -447,7 +447,7 @@ class BuildValidationRule
 
             ...(
                 $this->timezones !== null
-                    ? [new TimezoneValidation(timezones: $this->timezones, message: static::$validationMessage)]
+                    ? [new TimezoneValidation(timezones: $this->timezones, message: $this->timezoneValidationMessage)]
                     : []
             ),
 
@@ -458,7 +458,7 @@ class BuildValidationRule
                         cities: $this->timezoneIdentifierCities,
                         timezoneGroupNumber: $this->dateTimezoneGroupNumber,
                         timezoneGroup: $this->dateTimezoneGroupName,
-                        customMessage: static::$validationMessage,
+                        customMessage: $this->timezoneValidationMessage,
                     )
                 ]
                 : []
@@ -484,19 +484,19 @@ class BuildValidationRule
 
             ...(
                 $this->separateIntegersByComma === true
-                    ? [new IntegerByComma(message: static::$validationMessage)]
+                    ? [new IntegerByComma(message: $this->validationMessage)]
                     : []
             ),
 
             ...(
                 $this->separateStringsByComma === true
-                    ? [new StringByComma(message: static::$validationMessage)]
+                    ? [new StringByComma(message: $this->validationMessage)]
                     : []
             ),
 
             ...(
                 $this->separateStringsByUnderscore === true
-                    ? [new StringByUnderscore(message: static::$validationMessage)]
+                    ? [new StringByUnderscore(message: $this->validationMessage)]
                     : []
             ),
 

@@ -4,6 +4,7 @@ namespace Shergela\Validations\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Str;
 use Shergela\Validations\Constants\ValidationRegex as Regex;
 
 class SeparateStringsByComma implements ValidationRule
@@ -26,7 +27,7 @@ class SeparateStringsByComma implements ValidationRule
         if (! preg_match(pattern: Regex::SEPARATE_STRINGS_BY_COMMA, subject: $toString)) {
             $fail(
                 $this->message == null
-                    ? "Please separate (:attribute) values by comma. Entered value: {$toString}"
+                    ? "Please separate letter (:attribute) values by comma. Entered value: `{$toString}`"
                     : $this->message
             );
         }

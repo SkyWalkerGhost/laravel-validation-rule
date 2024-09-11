@@ -37,10 +37,10 @@ class ValidationRegex
     /**
      * Separate strings by comma. (ana,gustav,john).
      */
-    public const SEPARATE_STRINGS_BY_COMMA = "/^[a-z]+(?:,[a-z]+)*$/";
+    public const SEPARATE_STRINGS_BY_COMMA = "/^[a-zA-Z]+(?:,[a-zA-Z]+)*$/";
 
     /**
      * Separate strings by underscore (ana_gustav_john).
      */
-    public const SEPARATE_STRINGS_BY_UNDERSCORE = "/^[a-z]+(?:_[a-z]+)*$/";
+    public const SEPARATE_STRINGS_BY_UNDERSCORE = "/^[a-zA-Z]+(?:_[a-zA-Z]+)*$/";
 }

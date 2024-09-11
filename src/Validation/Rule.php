@@ -4,22 +4,24 @@ namespace Shergela\Validations\Validation;
 
 use Closure;
 use DateTimeZone;
+use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Shergela\Validations\DataManipulation\InNotInRuleManipulation;
 use Shergela\Validations\Constants\DatetimeZoneAbbreviation;
 use Shergela\Validations\Constants\IPMacValidation;
-use Shergela\Validations\Constants\ValidationArray as ArrayEnum;
+use Shergela\Validations\Constants\ValidationArray as ArrayRule;
 use Shergela\Validations\Constants\ValidationDate;
 use Shergela\Validations\Constants\ValidationDate as DateRule;
 use Shergela\Validations\Constants\ValidationInteger as IntegerRule;
-use Shergela\Validations\Constants\ValidationRule as RuleEnum;
+use Shergela\Validations\Constants\ValidationRule as RuleConst;
 use Shergela\Validations\Constants\ValidationString as StringRule;
 
 class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
@@ -82,6 +84,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param mixed $value
      * @param Closure $fail
      * @return void
+     * @throws Exception
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -114,6 +117,23 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
+     * @param string $message
+     * @param string $rule
+     * @return string
+     * @throws Exception
+     */
+    private static function buildCustomMessage(string $message, string $rule): string
+    {
+        if (Str::contains($message, ':') === false) {
+            throw new Exception('The placeholder not defined in the message.');
+        }
+
+        $explode = explode(' ', Str::after($message, ':'));
+
+        return $explode[0] . '.' . $rule;
+    }
+
+    /**
      * @param array<string> $messages
      * @return Rule
      */
@@ -138,13 +158,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return Rule
+     * @throws Exception
      */
     public static function required(string $message = null): Rule
     {
         static::$required = true;
 
         if ($message !== null) {
-            static::$customMessages[RuleEnum::REQUIRED] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'required')] = $message;
         }
 
         return new self();
@@ -162,13 +183,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
     /**
      * @return $this
+     * @throws Exception
      */
     public function boolean(string $message = null): static
     {
         static::$boolean = true;
 
         if ($message !== null) {
-            static::$customMessages[RuleEnum::BOOLEAN] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: RuleConst::BOOLEAN)] = $message;
         }
 
         return $this;
@@ -178,13 +200,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param int $min
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function min(int $min, string $message = null): static
     {
         $this->min = $min;
 
         if ($message !== null) {
-            static::$customMessages['min'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'min')] = $message;
         }
 
         return $this;
@@ -194,13 +217,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param int $max
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function max(int $max, string $message = null): static
     {
         $this->max = $max;
 
         if ($message !== null) {
-            static::$customMessages['max'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'max')] = $message;
         }
 
         return $this;
@@ -209,13 +233,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function email(string $message = null): static
     {
         $this->email = true;
 
         if ($message !== null) {
-            static::$customMessages[RuleEnum::EMAIL] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: RuleConst::EMAIL)] = $message;
         }
 
         return $this;
@@ -226,14 +251,15 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $column
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function uniqueEmail(string $table, string $column, string $message = null): static
     {
         $this->email = true;
-        $this->uniqueEmail = RuleEnum::UNIQUE_EMAIL . $table . ',' . $column;
+        $this->uniqueEmail = RuleConst::UNIQUE_EMAIL . $table . ',' . $column;
 
         if ($message !== null) {
-            static::$customMessages['unique'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'unique')] = $message;
         }
 
         return $this;
@@ -243,11 +269,12 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param bool $ascii
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function alpha(bool $ascii = false, string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages[StringRule::ALPHA] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: StringRule::ALPHA)] = $message;
         }
 
         if ($ascii === true) {
@@ -265,11 +292,17 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param bool $ascii
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function alphaDash(bool $ascii = false, string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages[StringRule::ALPHA_DASH] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(
+                    message: $message,
+                    rule: StringRule::ALPHA_DASH
+                )
+            ] = $message;
         }
 
         if ($ascii === true) {
@@ -287,11 +320,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param bool $ascii
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function alphaNum(bool $ascii = false, string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages[StringRule::ALPHA_NUM] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: StringRule::ALPHA_NUM)
+            ] = $message;
         }
 
         if ($ascii === true) {
@@ -308,13 +344,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function string(string $message = null): static
     {
         $this->string = true;
 
         if ($message !== null) {
-            static::$customMessages[StringRule::STRING] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: StringRule::STRING)] = $message;
         }
 
         return $this;
@@ -324,11 +361,12 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param array<string> $protocols
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function url(array $protocols = [], string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages[StringRule::URL] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: StringRule::URL)] = $message;
         }
 
         if (!empty($protocols)) {
@@ -345,13 +383,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function uuid(string $message = null): static
     {
         $this->uuid = true;
 
         if ($message !== null) {
-            static::$customMessages[RuleEnum::UUID] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: RuleConst::UUID)] = $message;
         }
 
         return $this;
@@ -359,13 +398,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
     /**
      * @return $this
+     * @throws Exception
      */
     public function ulid(string $message = null): static
     {
         $this->ulid = true;
 
         if ($message !== null) {
-            static::$customMessages[RuleEnum::ULID] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: RuleConst::ULID)] = $message;
         }
 
         return $this;
@@ -373,13 +413,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
     /**
      * @return $this
+     * @throws Exception
      */
     public function integer(string $message = null): static
     {
         $this->integer = true;
 
         if ($message !== null) {
-            static::$customMessages[IntegerRule::INTEGER] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: IntegerRule::INTEGER)] = $message;
         }
 
         return $this;
@@ -387,13 +428,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
     /**
      * @return $this
+     * @throws Exception
      */
     public function numeric(string $message = null): static
     {
         $this->numeric = true;
 
         if ($message !== null) {
-            static::$customMessages[IntegerRule::NUMERIC] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: IntegerRule::NUMERIC)] = $message;
         }
 
         return $this;
@@ -403,13 +445,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param int $digits
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function digits(int $digits, string $message = null): static
     {
         $this->digits = IntegerRule::DIGITS . $digits;
 
         if ($message !== null) {
-            static::$customMessages['digits'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'digits')] = $message;
         }
 
         return $this;
@@ -420,6 +463,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param int $max
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function digitsBetween(int $min, int $max, string $message = null): static
     {
@@ -427,6 +471,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         if ($message !== null) {
             static::$customMessages['digits_between'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'digits_between')] = $message;
         }
 
         return $this;
@@ -434,6 +479,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
     /**
      * @return $this
+     * @throws Exception
      */
     public function date(string $message = null): static
     {
@@ -441,6 +487,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         if ($message !== null) {
             static::$customMessages[DateRule::DATE] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: DateRule::DATE)] = $message;
         }
 
         return $this;
@@ -450,6 +497,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $date
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function dateEquals(string $date, string $message = null): static
     {
@@ -457,6 +505,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         if ($message !== null) {
             static::$customMessages['date_equals'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'date_equals')] = $message;
         }
 
         return $this;
@@ -466,6 +515,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $date
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function dateBefore(string $date, string $message = null): static
     {
@@ -473,6 +523,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         if ($message !== null) {
             static::$customMessages['before'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'before')] = $message;
         }
 
         return $this;
@@ -482,6 +533,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $date
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function dateBeforeOrEqual(string $date, string $message = null): static
     {
@@ -489,6 +541,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         if ($message !== null) {
             static::$customMessages['before_or_equal'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'before_or_equal')] = $message;
         }
 
         return $this;
@@ -498,13 +551,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $date
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function dateAfter(string $date, string $message = null): static
     {
         $this->dateAfter = $date;
 
         if ($message !== null) {
-            static::$customMessages['after'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'after')] = $message;
         }
 
         return $this;
@@ -513,13 +567,16 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function dateAfterOrEqualToday(string $message = null): static
     {
         $this->dateAfterOrEqualToday = true;
 
         if ($message !== null) {
-            static::$customMessages[DateRule::DATE_AFTER_OR_EQUAL_TODAY] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: DateRule::DATE_AFTER_OR_EQUAL_TODAY)
+            ] = $message;
         }
 
         return $this;
@@ -529,13 +586,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $date
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function dateAfterOrEquals(string $date, string $message = null): static
     {
         $this->dateAfterOrEqual = $date;
 
         if ($message !== null) {
-            static::$customMessages['after_or_equal'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'after_or_equal')] = $message;
         }
 
         return $this;
@@ -545,13 +603,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $format
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function dateFormat(string $format, string $message = null): static
     {
         $this->dateFormat = $format;
 
         if ($message !== null) {
-            static::$customMessages['date_format'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'date_format')] = $message;
         }
 
         return $this;
@@ -560,11 +619,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $timezone
      * @return $this
+     * @throws Exception
      */
     public function timezone(string $timezone = null, string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages[ValidationDate::TIMEZONE] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: ValidationDate::TIMEZONE)
+            ] = $message;
         }
 
         if ($timezone !== null) {
@@ -578,26 +640,32 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param array<string> $timezones
+     * @param array<string>|string $timezones
      * @return $this
      */
-    public function timezones(array $timezones, string $message = null): static
+    public function timezones(array|string $timezones, string $message = null): static
     {
+        /** @var array<string> $timezones */
+        $timezones = is_array($timezones) ? $timezones : func_get_args();
+
         $this->timezones = $timezones;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @return $this
      */
-    public function timezoneAfrica(array $cities, string $message = null): static
+    public function timezoneAfrica(array|string $cities, string $message = null): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviation::AFRICA,
@@ -607,19 +675,22 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::AFRICA);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
     }
 
     /**
-     * @param array<string> $cities
+     * @param array<string>|string $cities
      * @param string|null $message
      * @return $this
      */
-    public function timezoneAsia(array $cities, string $message = null): static
+    public function timezoneAsia(array|string $cities, string $message = null): static
     {
+        /** @var array<string> $cities */
+        $cities = is_array($cities) ? $cities : func_get_args();
+
         $this->timezoneIdentifierCities = $this->collectCities(
             cities: $cities,
             timezone: DatetimeZoneAbbreviation::ASIA,
@@ -629,7 +700,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::ASIA);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -654,7 +725,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::EUROPE);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -679,7 +750,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::AMERICA);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -704,7 +775,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::ANTARCTICA);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -729,7 +800,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::ARCTIC);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -754,7 +825,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::ATLANTIC);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -779,7 +850,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::AUSTRALIA);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -804,7 +875,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::INDIAN);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -829,7 +900,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->dateTimezoneGroupName = strtolower(DatetimeZoneAbbreviation::PACIFIC);
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->timezoneValidationMessage = $message;
         }
 
         return $this;
@@ -881,7 +952,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->uppercaseFirstLetter = true;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->validationMessage = $message;
         }
 
         return $this;
@@ -896,7 +967,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->lowercaseFirstLetter = true;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->validationMessage = $message;
         }
 
         return $this;
@@ -926,7 +997,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->uppercaseWord = true;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->validationMessage = $message;
         }
 
         return $this;
@@ -941,7 +1012,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->lowerCaseWord = true;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->validationMessage = $message;
         }
 
         return $this;
@@ -956,7 +1027,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->onlyLettersAndSpaces = true;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->validationMessage = $message;
         }
 
         return $this;
@@ -1058,7 +1129,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->separateIntegersByComma = true;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->validationMessage = $message;
         }
 
         return $this;
@@ -1072,7 +1143,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->separateStringsByComma = true;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->validationMessage = $message;
         }
 
         return $this;
@@ -1086,7 +1157,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->separateStringsByUnderscore = true;
 
         if ($message !== null) {
-            static::$validationMessage = $message;
+            $this->validationMessage = $message;
         }
 
         return $this;
@@ -1100,7 +1171,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->hexColor = true;
 
         if ($message !== null) {
-            static::$customMessages[RuleEnum::HEX_COLOR] = $message;
+            static::$customMessages[RuleConst::HEX_COLOR] = $message;
         }
 
         return $this;
@@ -1299,7 +1370,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->array = true;
 
         if ($message !== null) {
-            static::$customMessages[ArrayEnum::ARRAY] = $message;
+            static::$customMessages[ArrayRule::ARRAY] = $message;
         }
 
         return $this;
@@ -1363,16 +1434,18 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     }
 
     /**
-     * @param string $attribute
      * @return array<string>
      */
-    private function getValidationMessages(string $attribute): array
+    private function getValidationMessages(): array
     {
         $result = static::$customValidationMessages;
 
         if (! empty(static::$customMessages)) {
-            foreach (static::$customMessages as $key => $message) {
-                $result[$attribute . '.' . $key] = $message;
+            foreach (static::$customMessages as $index => $msg) {
+                $placeholder = Str::replace(':', '', $msg);
+                $replace = Str::replace('_', ' ', $placeholder);
+
+                $result[$index] = $replace;
             }
         }
 
@@ -1394,18 +1467,20 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $attribute
      * @param mixed $value
      * @return bool
+     * @throws Exception
      */
     public function passes(string $attribute, mixed $value): bool
     {
+        $rules = [
+            $this->getAttribute(attribute: $attribute) => $this->getValidationRules()
+        ];
+
         $validator = ValidatorFacade::make(
             data: $this->getValidationData(),
-            rules: [
-                $this->getAttribute(attribute: $attribute) => $this->getValidationRules()
-            ],
-            messages: $this->getValidationMessages(attribute: $attribute),
+            rules: $rules,
+            messages: $this->getValidationMessages(),
             attributes: $this->customAttributes
         )->stopOnFirstFailure();
-
 
         if ($validator->fails()) {
             return $this->fail($validator->messages()->all());
