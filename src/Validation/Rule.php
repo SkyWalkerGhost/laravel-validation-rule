@@ -11,13 +11,11 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
-use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Shergela\Validations\DataManipulation\InNotInRuleManipulation;
 use Shergela\Validations\Constants\DatetimeZoneAbbreviation;
 use Shergela\Validations\Constants\IPMacValidation;
-use Shergela\Validations\Constants\ValidationArray as ArrayRule;
 use Shergela\Validations\Constants\ValidationDate;
 use Shergela\Validations\Constants\ValidationDate as DateRule;
 use Shergela\Validations\Constants\ValidationInteger as IntegerRule;
@@ -65,6 +63,8 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @var array<string>
      */
     protected array $customRules = [];
+
+    private static string $placeholder = ':';
 
     /**
      * @param Validator $validator
@@ -124,11 +124,15 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      */
     private static function buildCustomMessage(string $message, string $rule): string
     {
-        if (Str::contains($message, ':') === false) {
-            throw new Exception('The placeholder not defined in the message.');
+        if (Str::contains($message, static::$placeholder) === false) {
+            throw new Exception(
+                'The placeholder not defined in the message.'
+                . ' ' . 'Placeholder must be like this [:name] format.'
+                . ' ' . 'For example `The :name field is required.`'
+            );
         }
 
-        $explode = explode(' ', Str::after($message, ':'));
+        $explode = explode(' ', Str::after($message, static::$placeholder));
 
         return $explode[0] . '.' . $rule;
     }
@@ -911,11 +915,12 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param int|null $second
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function decimal(int $first, int $second = null, string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages['decimal'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'decimal')] = $message;
         }
 
         if ($second != null) {
@@ -931,13 +936,16 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function uppercase(string $message = null): static
     {
         $this->uppercase = true;
 
         if ($message !== null) {
-            static::$customMessages[StringRule::UPPERCASE] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: StringRule::UPPERCASE)
+            ] = $message;
         }
 
         return $this;
@@ -976,13 +984,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function lowercase(string $message = null): static
     {
         $this->lowerCase = true;
 
         if ($message !== null) {
-            static::$customMessages[StringRule::LOWERCASE] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'lowercase')] = $message;
         }
 
         return $this;
@@ -1037,6 +1046,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param array<string> $with
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function startsWith(array $with, string $message = null): static
     {
@@ -1045,7 +1055,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->startsWith = StringRule::STARTS_WITH . $implode;
 
         if ($message !== null) {
-            static::$customMessages['starts_with'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'starts_with')] = $message;
         }
 
         return $this;
@@ -1055,6 +1065,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param array<string> $with
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function endsWith(array $with, string $message = null): static
     {
@@ -1063,7 +1074,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->endsWith = StringRule::ENDS_WITH . $implode;
 
         if ($message !== null) {
-            static::$customMessages['ends_with'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'ends_with')] = $message;
         }
 
         return $this;
@@ -1073,6 +1084,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param array<string> $with
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function doesntStartWith(array $with, string $message = null): static
     {
@@ -1081,7 +1093,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->doesntStartWith = StringRule::DOESNT_START_WITH . $implode;
 
         if ($message !== null) {
-            static::$customMessages['doesnt_start_with'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'doesnt_start_with')] = $message;
         }
 
         return $this;
@@ -1091,6 +1103,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param array<string> $with
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function doesntEndWith(array $with, string $message = null): static
     {
@@ -1099,7 +1112,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $this->doesntEndWith = StringRule::DOESNT_END_WITH . $implode;
 
         if ($message !== null) {
-            static::$customMessages['doesnt_end_with'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'doesnt_end_with')] = $message;
         }
 
         return $this;
@@ -1109,13 +1122,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string $pattern
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function regex(string $pattern, string $message = null): static
     {
         $this->regexPattern = $pattern;
 
         if ($message !== null) {
-            static::$customMessages['regex'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'regex')] = $message;
         }
 
         return $this;
@@ -1165,13 +1179,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
     /**
      * @return $this
+     * @throws Exception
      */
     public function hexColor(string $message = null): static
     {
         $this->hexColor = true;
 
         if ($message !== null) {
-            static::$customMessages[RuleConst::HEX_COLOR] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: RuleConst::HEX_COLOR)] = $message;
         }
 
         return $this;
@@ -1180,13 +1195,16 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function ip(string $message = null): static
     {
         $this->ip = true;
 
         if ($message !== null) {
-            static::$customMessages[IPMacValidation::IP] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: IPMacValidation::IP)
+            ] = $message;
         }
 
         return $this;
@@ -1195,13 +1213,16 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function ipv4(string $message = null): static
     {
         $this->ipv4 = true;
 
         if ($message !== null) {
-            static::$customMessages[IPMacValidation::IPV4] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: IPMacValidation::IPV4)
+            ] = $message;
         }
 
         return $this;
@@ -1210,11 +1231,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function ipv6(string $message = null): static
     {
         if ($message !== null) {
-            static::$customMessages[IPMacValidation::IPV6] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: IPMacValidation::IPV6)
+            ] = $message;
         }
 
         return $this;
@@ -1224,27 +1248,34 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string|null $message
      * @return $this
      * The field under validation must be a MAC address.
+     * @throws Exception
      */
     public function macAddress(string $message = null): static
     {
         $this->macAddress = true;
 
         if ($message !== null) {
-            static::$customMessages[IPMacValidation::MAC_ADDRESS] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: IPMacValidation::MAC_ADDRESS)
+            ] = $message;
         }
+
         return $this;
     }
 
     /**
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function json(string $message = null): static
     {
         $this->json = true;
 
         if ($message !== null) {
-            static::$customMessages[StringRule::JSON] = $message;
+            static::$customMessages[
+                self::buildCustomMessage(message: $message, rule: StringRule::JSON)
+            ] = $message;
         }
 
         return $this;
@@ -1254,13 +1285,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string|null $message
      * @return $this
      * The integer under validation must have a minimum length of value.
+     * @throws Exception
      */
     public function minDigits(int $minDigits, string $message = null): static
     {
         $this->minDigits = IntegerRule::MIN_DIGITS . $minDigits;
 
         if ($message !== null) {
-            static::$customMessages['min_digits'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'min_digits')] = $message;
         }
 
         return $this;
@@ -1270,13 +1302,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param string|null $message
      * @return $this
      * The integer under validation must have a maximum length of value.
+     * @throws Exception
      */
     public function maxDigits(int $maxDigits, string $message = null): static
     {
         $this->maxDigits = IntegerRule::MAX_DIGITS . $maxDigits;
 
         if ($message !== null) {
-            static::$customMessages['max_digits'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'max_digits')] = $message;
         }
 
         return $this;
@@ -1287,13 +1320,14 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param int $size
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function size(int $size, string $message = null): static
     {
         $this->size = $size;
 
         if ($message !== null) {
-            static::$customMessages['size'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'size')] = $message;
         }
 
         return $this;
@@ -1303,6 +1337,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param Arrayable<int, string>|array<string>|string $values
      * @param string|null $message
      * @return Rule
+     * @throws Exception
      */
     public static function in(Arrayable|array|string $values, string $message = null): Rule
     {
@@ -1316,7 +1351,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         static::$in = (new InNotInRuleManipulation(values: $values, in: true))->handle();
 
         if ($message !== null) {
-            static::$customMessages['in'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: RuleConst::IN)] = $message;
         }
 
         return new self();
@@ -1326,6 +1361,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param Arrayable<int, string>|array<string>|string $values
      * @param string|null $message
      * @return Rule
+     * @throws Exception
      */
     public static function notIn(Arrayable|array|string $values, string $message = null): Rule
     {
@@ -1339,7 +1375,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         static::$notIn = (new InNotInRuleManipulation(values: $values, notIn: true))->handle();
 
         if ($message !== null) {
-            static::$customMessages['not_in'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: RuleConst::NOT_IN)] = $message;
         }
 
         return new self();
@@ -1349,29 +1385,25 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      * @param int $length
      * @param string|null $message
      * @return $this
+     * @throws Exception
      */
     public function length(int $length, string $message = null): static
     {
         $this->size = $length;
 
         if ($message !== null) {
-            static::$customMessages['size'] = $message;
+            static::$customMessages[self::buildCustomMessage(message: $message, rule: 'size')] = $message;
         }
 
         return $this;
     }
 
     /**
-     * @param string|null $message
      * @return $this
      */
-    public function array(string $message = null): static
+    public function array(): static
     {
         $this->array = true;
-
-        if ($message !== null) {
-            static::$customMessages[ArrayRule::ARRAY] = $message;
-        }
 
         return $this;
     }
@@ -1391,7 +1423,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      */
     public function arrayDistinctStrict(): static
     {
-        $this->distinctStinct = true;
+        $this->distinctStrict = true;
 
         return $this;
     }
@@ -1442,7 +1474,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         if (! empty(static::$customMessages)) {
             foreach (static::$customMessages as $index => $msg) {
-                $placeholder = Str::replace(':', '', $msg);
+                $placeholder = Str::replace(static::$placeholder, '', $msg);
                 $replace = Str::replace('_', ' ', $placeholder);
 
                 $result[$index] = $replace;

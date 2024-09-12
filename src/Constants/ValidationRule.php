@@ -44,10 +44,10 @@ class ValidationRule
     /**
      * The field under validation must be included in the given list of values in:foo,bar...
      */
-    public const IN = 'in:';
+    public const IN = 'in';
 
     /**
      * The field under validation must not be included in the given list of values not_in:foo,bar,bar...
      */
-    public const NOT_IN = 'not_in:';
+    public const NOT_IN = 'not_in';
 }

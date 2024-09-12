@@ -1,5 +1,8 @@
 # Build custom laravel validation rules easily
 
+> This package is under development, please do not use in production.
+> You can download and test it.
+
 ## Installation
 Require the package with composer using the following command:
 

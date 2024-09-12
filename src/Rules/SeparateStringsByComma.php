@@ -4,7 +4,6 @@ namespace Shergela\Validations\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Str;
 use Shergela\Validations\Constants\ValidationRegex as Regex;
 
 class SeparateStringsByComma implements ValidationRule

@@ -339,7 +339,7 @@ class BuildValidationRule
     /**
      * @var bool
      */
-    protected ?bool $distinctStinct = false;
+    protected ?bool $distinctStrict = false;
 
     /**
      * @var bool
@@ -468,8 +468,10 @@ class BuildValidationRule
                 ? [DateRule::DATE_BEFORE_OR_EQUAL . $this->dateBeforeOrEqual]
                 : []
             ),
+
             ...($this->dateAfterOrEqualToday === true ? [DateRule::DATE_AFTER_OR_EQUAL_TODAY] : []),
             ...($this->dateAfter !== null ? [DateRule::DATE_AFTER . $this->dateAfter] : []),
+
             ...($this->dateAfterOrEqual !== null
                 ? [DateRule::DATE_AFTER_OR_EQUAL . $this->dateAfterOrEqual]
                 : []
@@ -507,7 +509,7 @@ class BuildValidationRule
              */
             ...($this->array === true ? [ArrayRule::ARRAY] : []),
             ...($this->arrayDistinct === true ? [ArrayRule::DISTINCT] : []),
-            ...($this->distinctStinct === true ? [ArrayRule::DISTINCT_STRICT] : []),
+            ...($this->distinctStrict === true ? [ArrayRule::DISTINCT_STRICT] : []),
             ...($this->distinctIgnoreCase === true ? [ArrayRule::DISTINCT_IGNORE_CASE] : []),
         ];
 

@@ -2,6 +2,13 @@
 
 All notable changes to `shergela/validation-rule` will be documented in this file.
 
+## 1.0.7 | 12 September - 2024
+- Refactoring code.
+- Added support for substitutions in messages, This is needed to be able to write good messages.
+  Placeholder will allow you to write messages using positioning.
+- New syntax for messages "The :name field is required.", or "The :email field is required."
+
+
 ## 1.0.6 | 06 September - 2024
 
 - add new `uppercaseWord()` method.
