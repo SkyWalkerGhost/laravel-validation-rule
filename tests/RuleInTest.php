@@ -3,12 +3,16 @@
 namespace Shergela\Validations;
 
 
+use Exception;
 use Shergela\Validations\Enums\TestEnum;
 use Shergela\Validations\Validation\Rule;
 use Tests\TestCase;
 
 class RuleInTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function test_in_validation()
     {
         $rule = Rule::in(['Laravel', 'Framework', 'PHP'])->getRule();
@@ -43,11 +47,7 @@ class RuleInTest extends TestCase
 
         $this->assertSame('in:"1","2","3","4"', (string) $rule);
 
-        $rule = Rule::in('1', '2', '3', '4')->getRule();
-
-        $this->assertSame('in:"1","2","3","4"', (string) $rule);
-
-        $rule = Rule::in('1', '2', '3', '4')->getRule();
+        $rule = Rule::in(['1', '2', '3', '4'])->getRule();
 
         $this->assertSame('in:"1","2","3","4"', (string) $rule);
 

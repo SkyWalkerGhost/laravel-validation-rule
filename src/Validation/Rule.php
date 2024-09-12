@@ -124,7 +124,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
      */
     private static function buildCustomMessage(string $message, string $rule): string
     {
-        if (Str::contains($message, static::$placeholder) === false) {
+        if (Str::contains($message, self::$placeholder) === false) {
             throw new Exception(
                 'The placeholder not defined in the message.'
                 . ' ' . 'Placeholder must be like this [:name] format.'
@@ -132,7 +132,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
             );
         }
 
-        $explode = explode(' ', Str::after($message, static::$placeholder));
+        $explode = explode(' ', Str::after($message, self::$placeholder));
 
         return $explode[0] . '.' . $rule;
     }
@@ -1474,7 +1474,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
 
         if (! empty(static::$customMessages)) {
             foreach (static::$customMessages as $index => $msg) {
-                $placeholder = Str::replace(static::$placeholder, '', $msg);
+                $placeholder = Str::replace(self::$placeholder, '', $msg);
                 $replace = Str::replace('_', ' ', $placeholder);
 
                 $result[$index] = $replace;

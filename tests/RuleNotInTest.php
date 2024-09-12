@@ -3,12 +3,16 @@
 namespace Shergela\Validations;
 
 
+use Exception;
 use Shergela\Validations\Enums\TestEnum;
 use Shergela\Validations\Validation\Rule;
 use Tests\TestCase;
 
 class RuleNotInTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function test_not_in_validation()
     {
         $rule = Rule::notIn(['Caldera', 'Aramis', 'Athos'])->getRule(1);
@@ -43,11 +47,7 @@ class RuleNotInTest extends TestCase
 
         $this->assertSame('not_in:"1","2","3","4"', (string) $rule);
 
-        $rule = Rule::notIn('1', '2', '3', '4')->getRule(1);
-
-        $this->assertSame('not_in:"1","2","3","4"', (string) $rule);
-
-        $rule = Rule::notIn('1', '2', '3', '4')->getRule(1);
+        $rule = Rule::notIn(['1', '2', '3', '4'])->getRule(1);
 
         $this->assertSame('not_in:"1","2","3","4"', (string) $rule);
 
