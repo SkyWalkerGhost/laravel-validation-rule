@@ -21,6 +21,7 @@ use Shergela\Validations\Constants\ValidationDate as DateRule;
 use Shergela\Validations\Constants\ValidationInteger as IntegerRule;
 use Shergela\Validations\Constants\ValidationRule as RuleConst;
 use Shergela\Validations\Constants\ValidationString as StringRule;
+use Shergela\Validations\Constants\ValidationRegex as RegexRule;
 
 class Rule extends BuildValidationRule implements ValidationRule, ValidatorAwareRule, DataAwareRule
 {
@@ -1468,16 +1469,24 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
     /**
      * @return array<string>
      */
-    private function getValidationMessages(): array
+    private function getValidationMessages(string $attribute): array
     {
         $result = static::$customValidationMessages;
 
         if (! empty(static::$customMessages)) {
-            foreach (static::$customMessages as $index => $msg) {
-                $placeholder = Str::replace(self::$placeholder, '', $msg);
-                $replace = Str::replace('_', ' ', $placeholder);
+            foreach (static::$customMessages as $ruleKey => $msg) {
+                $replacePlaceholder = Str::replace(self::$placeholder . $attribute, '', $msg);
 
-                $result[$index] = $replace;
+                /**
+                 * Remove whitespaces.
+                 */
+                $message = preg_replace(
+                    pattern: RegexRule::REMOVE_WHITESPACES,
+                    replacement: ' ',
+                    subject: $replacePlaceholder
+                );
+
+                $result[$ruleKey] = $message;
             }
         }
 
@@ -1510,7 +1519,7 @@ class Rule extends BuildValidationRule implements ValidationRule, ValidatorAware
         $validator = ValidatorFacade::make(
             data: $this->getValidationData(),
             rules: $rules,
-            messages: $this->getValidationMessages(),
+            messages: $this->getValidationMessages(attribute: $attribute),
             attributes: $this->customAttributes
         )->stopOnFirstFailure();
 

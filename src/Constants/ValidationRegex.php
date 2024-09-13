@@ -43,4 +43,9 @@ class ValidationRegex
      * Separate strings by underscore (ana_gustav_john).
      */
     public const SEPARATE_STRINGS_BY_UNDERSCORE = "/^[a-zA-Z]+(?:_[a-zA-Z]+)*$/";
+
+    /**
+     * Remove whitespaces.
+     */
+    public const REMOVE_WHITESPACES = "/\s+/";
 }
