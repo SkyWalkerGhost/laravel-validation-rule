@@ -169,8 +169,8 @@ public function authorize(): bool
           public function rules(): array
           {
             return [
-                'name' => Rule::required(message: 'Please enter your name')
-                    ->min(min: 3, message: 'Please enter at least 3 characters'),
+                'name' => Rule::required(message: 'Please :name enter your name')
+                    ->min(min: 3, message: 'Please :name enter at least 3 characters'),
             ];
           }
       }
